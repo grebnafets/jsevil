@@ -233,9 +233,9 @@ if (typeof console !== "undefined") {
   console.log.apply(console, arguments);
  }
 }
-var __test_show_success = __test_show_success || true;
-var __test_show_failure = __test_show_failure || true;
-var __test_show_result = __test_show_result || true;
+var __test_show_success = __test_show_success || false;
+var __test_show_failure = __test_show_failure || false;
+var __test_show_result = __test_show_result || false;
 var __test_count_success = __test_count_success || 0;
 var __test_count_total = __test_count_total || 0;
 function __test(cond, condstr, line, file)
@@ -276,14 +276,18 @@ function test_show_result()
  }
  if (__test_show_result) {
   printf(
-   "%cTest passed radio: %c%.2f%",
+   "%cTest passed: %c%.2f%",
    "font-weight:bold;color:blue",
    "color:purple",
    p
   );
  }
 }
-printf("this is demo script");
+__test_show_failure = true;
+__test_show_success = true;
+printf("%cthis is demo script", "color:green");
+__test(1 === 1, "1 === 1", 5, "page.js");
+__test(10 === 2, "10 === 2", 6, "page.js");
 if ("content" in document.createElement("template")) {
  var d = document.getElementById("demo-template");
  d.innerHTML = "template stuff";
