@@ -244,10 +244,18 @@ function Stateno(defaultHandle)
  this.handle = defaultHandle;
  this.autoTrigger = false;
 }
+function stateno_create(stateno, fmt, bad)
+{
+ "use strict";
+ var id = stateno.states.length;
+ stateno.states.push({id: id, fmt: fmt, bad: bad});
+ return id;
+}
 function __statenoUnusedFalse()
 {
  "use strict";
  Stateno();
+ stateno_create();
 }
 if (false) {
  __statenoUnusedFalse();

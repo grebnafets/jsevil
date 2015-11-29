@@ -244,10 +244,18 @@ function Stateno(defaultHandle)
  this.handle = defaultHandle;
  this.autoTrigger = false;
 }
+function stateno_create(stateno, fmt, bad)
+{
+ "use strict";
+ var id = stateno.states.length;
+ stateno.states.push({id: id, fmt: fmt, bad: bad});
+ return id;
+}
 function __statenoUnusedFalse()
 {
  "use strict";
  Stateno();
+ stateno_create();
 }
 if (false) {
  __statenoUnusedFalse();
@@ -305,13 +313,13 @@ function test_show_result()
   );
  }
 }
-__test_show_failure = true;__test_show_success = true;__test_show_result = true;
+__test_show_failure = true;
 function defHandle(state, bad, fmt, args)
 {
  "use strict";
  printf("%d is %s, %s", state, bad, fmt, args);
 }
-(function __stateno_test_Stateno() {
+(function test__Stateno() {
  "use strict";
  var state = new Stateno(defHandle);
  __test(defHandle === state.handle, "defHandle === state.handle", 13, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
@@ -322,5 +330,26 @@ function defHandle(state, bad, fmt, args)
  __test(Array.isArray(state.dump), "Array.isArray(state.dump)", 18, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
  __test(state.dump.length === 0, "state.dump.length === 0", 19, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
  __test(state.autoTrigger === false, "state.autoTrigger === false", 20, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+}());
+(function test__stateno_create(){
+ "use strict";
+ var s, THIS, THAT, OTHER;
+ s = new Stateno(defHandle);
+ THIS = stateno_create(s, "I am %s", true);
+ THAT = stateno_create(s, "I am %s", false);
+ OTHER = stateno_create(s, "I am %s", true);
+ __test(s.states.length === 4, "s.states.length === 4", 31, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[0].id === 0, "s.states[NO_STATE].id === NO_STATE", 33, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[THIS].id === THIS, "s.states[THIS].id === THIS", 34, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[THAT].id === THAT, "s.states[THAT].id === THAT", 35, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[OTHER].id === OTHER, "s.states[OTHER].id === OTHER", 36, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[0].fmt === "No state", "s.states[NO_STATE].fmt === \"No state\"", 38, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[THIS].fmt === "I am %s", "s.states[THIS].fmt === \"I am %s\"", 39, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[THAT].fmt === "I am %s", "s.states[THAT].fmt === \"I am %s\"", 40, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[OTHER].fmt === "I am %s", "s.states[OTHER].fmt === \"I am %s\"", 41, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[0].bad === false, "s.states[NO_STATE].bad === false", 43, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[THIS].bad === true, "s.states[THIS].bad === true", 44, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[THAT].bad === false, "s.states[THAT].bad === false", 45, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(s.states[OTHER].bad === true, "s.states[OTHER].bad === true", 46, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
 }());
 test_show_result();
