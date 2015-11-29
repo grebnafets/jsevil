@@ -241,12 +241,15 @@ var __test_count_total = __test_count_total || 0;
 function __test(cond, condstr, line, file)
 {
  "use strict";
+ var raw, f;
+ raw = file.split("/");
+ f = raw[raw.length - 1];
  if (cond) {
   if (__test_show_success) {
    printf(
     "%c%d:%s:%s",
     "font-weight:bold;color:green",
-    line, condstr, file
+    line, condstr, f
    );
   }
   __test_count_success++;
@@ -255,7 +258,7 @@ function __test(cond, condstr, line, file)
    printf(
     "%c%d:%s:%s",
     "font-weight:bold;color:red",
-    line, condstr, file
+    line, condstr, f
    );
   }
  }
@@ -283,7 +286,7 @@ function test_show_result()
   );
  }
 }
-__test_show_result = true;
+__test_show_failure = true;__test_show_success = true;__test_show_result = true;
 var fmt, str;
 fmt = "All liquids are %s";
 str = sprintf(fmt, "coffee");
