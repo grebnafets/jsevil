@@ -1,3 +1,6 @@
+Don't forget to define the environment variable JSEVIL_SEARCH_PATH so it
+points to the jsevil directory.
+
 JSEvil is for next generation of developers who have learned many spells from
 many different languages. They don't give a duck anymore and frequently ride
 on Penguins. These hardened soles know that the idiomatic way is the path of
