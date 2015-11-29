@@ -10,8 +10,10 @@ May the force be with you! Fly Penguin fly!
 Oh, I almost forgot.
 
 JSEvil is a simple framework that is uses environment variables, makefiles,
-preprocessors and scripts so you can do more without the usual limitations that
-follows overdose of "abstractions".
+preprocessors, post classification and scripts so you can do more without
+the usual limitations that follows overdose of "abstractions".
+Post classification is simply about doing classes after all the members are
+known.
 
 Right now it has:
 
