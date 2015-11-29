@@ -1,5 +1,5 @@
 /* global test, test_show_result, sprintf */
-/* global Stateno, stateno_create, stateno_trigger */
+/* global Stateno, stateno_create, stateno_trigger, stateno_set */
 /* global NO_STATE */
 
 function defHandle(state, args)
@@ -65,6 +65,23 @@ function defHandle(state, args)
 	out = stateno_trigger(s, THAT, ["that", "two"]);
 	test(out === "2 that is false says I am that and two");
 	out = stateno_trigger(s, OTHER, ["other", "three"]);
+	test(out === "3 that is true says I am other and three");
+}());
+
+(function test__stateno_set() {
+	"use strict";
+	var s, out, THIS, THAT, OTHER;
+	s = new Stateno(defHandle);
+	s.autoTrigger = true;
+	THIS  = stateno_create(s, "I am %s and %s", true);
+	THAT  = stateno_create(s, "I am %s and %s", false);
+	OTHER = stateno_create(s, "I am %s and %s", true);
+
+	out = stateno_set(s, THIS, ["this", "one"]);
+	test(out === "1 that is true says I am this and one");
+	out = stateno_set(s, THAT, ["that", "two"]);
+	test(out === "2 that is false says I am that and two");
+	out = stateno_set(s, OTHER, ["other", "three"]);
 	test(out === "3 that is true says I am other and three");
 }());
 

@@ -61,6 +61,18 @@ function stateno_trigger(stateno, id, args)
 	return out;
 }
 
+function stateno_set(stateno, state, args)
+{
+	"use strict";
+	var out = null;
+	stateno.state = state;
+	stateno.bad = stateno.states[state].bad;
+	if (stateno.autoTrigger) {
+		out = stateno_trigger(stateno, state, args);
+	}
+	return out;
+}
+
 /* ==============jshint hack================= */
 function __statenoUnusedFalse()
 {
@@ -68,6 +80,7 @@ function __statenoUnusedFalse()
 	Stateno();
 	stateno_create();
 	stateno_trigger();
+	stateno_set();
 }
 if (false) {
 	__statenoUnusedFalse();
