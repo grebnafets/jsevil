@@ -117,7 +117,7 @@ function sprintf(fmt)
 function printf(fmt)
 {
 	"use strict";
-	var res = sprintf.apply(fmt, arguments);
+	var res = sprintf.apply(null, arguments);
 	print(res);
 }
 
