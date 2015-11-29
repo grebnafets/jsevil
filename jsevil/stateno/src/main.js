@@ -35,9 +35,7 @@ function Stateno(defaultHandle)
 	this.states.push({id: 0, fmt: "No state", bad: false});
 	/*
 	 * defaultHandle takes in:
-	 * 	state as number,
-	 * 	bad as boolean,
-	 * 	format as string,
+	 * 	state obj
 	 * 	arguments as array
 	 * You can use the sprintf function to help you out.
 	 * */
@@ -53,12 +51,23 @@ function stateno_create(stateno, fmt, bad)
 	return id;
 }
 
+function stateno_trigger(stateno, id, args)
+{
+	"use strict";
+	var out = null;
+	if (typeof stateno.handle === "function") {
+		out = stateno.handle(stateno.states[id], args);
+	}
+	return out;
+}
+
 /* ==============jshint hack================= */
 function __statenoUnusedFalse()
 {
 	"use strict";
 	Stateno();
 	stateno_create();
+	stateno_trigger();
 }
 if (false) {
 	__statenoUnusedFalse();

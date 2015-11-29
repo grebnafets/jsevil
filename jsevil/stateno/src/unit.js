@@ -1,10 +1,16 @@
-/* global test, test_show_result, Stateno, stateno_create, printf */
+/* global test, test_show_result, sprintf */
+/* global Stateno, stateno_create, stateno_trigger */
 /* global NO_STATE */
 
-function defHandle(state, bad, fmt, args)
+function defHandle(state, args)
 {
 	"use strict";
-	printf("%d is %s, %s", state, bad, fmt, args);
+	var fmt, out;
+	/* When this was written, sprintf can only take in array if second
+	 * argument is array. Otherwise it will produce unpredicted results. */
+	fmt = sprintf(state.fmt, args);
+	out = sprintf("%d that is %s says %s", state.id, state.bad, fmt);
+	return out;
 }
 
 (function test__Stateno() {
@@ -45,4 +51,21 @@ function defHandle(state, bad, fmt, args)
 	test(s.states[THAT].bad === false);
 	test(s.states[OTHER].bad === true);
 }());
+
+(function test__stateno_trigger() {
+	"use strict";
+	var s, out, THIS, THAT, OTHER;
+	s = new Stateno(defHandle);
+	THIS  = stateno_create(s, "I am %s and %s", true);
+	THAT  = stateno_create(s, "I am %s and %s", false);
+	OTHER = stateno_create(s, "I am %s and %s", true);
+
+	out = stateno_trigger(s, THIS, ["this", "one"]);
+	test(out === "1 that is true says I am this and one");
+	out = stateno_trigger(s, THAT, ["that", "two"]);
+	test(out === "2 that is false says I am that and two");
+	out = stateno_trigger(s, OTHER, ["other", "three"]);
+	test(out === "3 that is true says I am other and three");
+}());
+
 test_show_result();
