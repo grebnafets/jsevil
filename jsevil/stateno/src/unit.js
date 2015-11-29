@@ -1,15 +1,22 @@
 /* global test, test_show_result, sprintf */
-/* global Stateno, stateno_create, stateno_trigger, stateno_set */
+/* global Stateno, stateno_create, stateno_trigger, stateno_set, stateno_clear */
 /* global NO_STATE */
 
 function defHandle(state, args)
 {
 	"use strict";
 	var fmt, out;
+	out = "";
 	/* When this was written, sprintf can only take in array if second
 	 * argument is array. Otherwise it will produce unpredicted results. */
-	fmt = sprintf(state.fmt, args);
-	out = sprintf("%d that is %s says %s", state.id, state.bad, fmt);
+	if (args !== undefined) {
+		fmt = sprintf(state.fmt, args);
+		out = sprintf(
+			"%d that is %s says %s", state.id, state.bad, fmt
+		);
+	} else {
+		out = state.fmt;
+	}
 	return out;
 }
 
@@ -83,6 +90,38 @@ function defHandle(state, args)
 	test(out === "2 that is false says I am that and two");
 	out = stateno_set(s, OTHER, ["other", "three"]);
 	test(out === "3 that is true says I am other and three");
+}());
+
+(function test__stateno_set() {
+	"use strict";
+	var s, out, THIS, THAT, OTHER;
+	s = new Stateno(defHandle);
+	s.autoTrigger = true;
+	THIS  = stateno_create(s, "foobar", true);
+	THAT  = stateno_create(s, "foobar", true);
+	OTHER = stateno_create(s, "foobar", true);
+
+	out = stateno_set(s, THIS);
+	test(out === "foobar");
+	test(s.state === THIS);
+	test(s.bad);
+	stateno_clear(s);
+	test(s.state === NO_STATE);
+	test(!s.bad);
+	out = stateno_set(s, THAT);
+	test(out === "foobar");
+	test(s.state === THAT);
+	test(s.bad);
+	stateno_clear(s);
+	test(s.state === NO_STATE);
+	test(!s.bad);
+	out = stateno_set(s, OTHER);
+	test(out === "foobar");
+	test(s.state === OTHER);
+	test(s.bad);
+	stateno_clear(s);
+	test(s.state === NO_STATE);
+	test(!s.bad);
 }());
 
 test_show_result();

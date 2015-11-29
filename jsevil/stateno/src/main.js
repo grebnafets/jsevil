@@ -73,6 +73,13 @@ function stateno_set(stateno, state, args)
 	return out;
 }
 
+function stateno_clear(stateno)
+{
+	"use strict";
+	stateno.state = NO_STATE;
+	stateno.bad   = false;
+}
+
 /* ==============jshint hack================= */
 function __statenoUnusedFalse()
 {
@@ -81,6 +88,7 @@ function __statenoUnusedFalse()
 	stateno_create();
 	stateno_trigger();
 	stateno_set();
+	stateno_clear();
 }
 if (false) {
 	__statenoUnusedFalse();
