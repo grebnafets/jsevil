@@ -1,4 +1,3 @@
-var foobar = 1;
 function printfps_warnUnsupported(val)
 {
  "use strict";
@@ -234,6 +233,25 @@ if (typeof console !== "undefined") {
   console.log.apply(console, arguments);
  }
 }
+function Stateno(defaultHandle)
+{
+ "use strict";
+ this.state = 0;
+ this.bad = false;
+ this.states = [];
+ this.dump = [];
+ this.states.push({id: 0, fmt: "No state", bad: false});
+ this.handle = defaultHandle;
+ this.autoTrigger = false;
+}
+function __statenoUnusedFalse()
+{
+ "use strict";
+ Stateno();
+}
+if (false) {
+ __statenoUnusedFalse();
+}
 var __test_show_success = __test_show_success || false;
 var __test_show_failure = __test_show_failure || false;
 var __test_show_result = __test_show_result || false;
@@ -285,4 +303,21 @@ function test_show_result()
  }
 }
 __test_show_result = true;
-var unit = 1;
+function defHandle(state, bad, fmt, args)
+{
+ "use strict";
+ printf("%d is %s, %s", state, bad, fmt, args);
+}
+(function __stateno_test_Stateno() {
+ "use strict";
+ var state = new Stateno(defHandle);
+ __test(defHandle === state.handle, "defHandle === state.handle", 13, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(state.state === 0, "state.state === NO_STATE", 14, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(state.bad === false, "state.bad === false", 15, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(Array.isArray(state.states), "Array.isArray(state.states)", 16, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(state.states.length === 1, "state.states.length === 1", 17, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(Array.isArray(state.dump), "Array.isArray(state.dump)", 18, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(state.dump.length === 0, "state.dump.length === 0", 19, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+ __test(state.autoTrigger === false, "state.autoTrigger === false", 20, "/home/mme/ws/js/jsevil/jsevil/stateno/src/unit.js");
+}());
+test_show_result();
