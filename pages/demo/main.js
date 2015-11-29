@@ -223,13 +223,12 @@ function sprintf(fmt)
 function printf(fmt)
 {
  "use strict";
- var res = sprintf.apply(fmt, arguments);
+ var res = sprintf.apply(null, arguments);
  print(res);
 }
 if (typeof console !== "undefined") {
  var print = function(msg) {console.log(msg);}
  var printf = function(msg) {
-  var args = Array.prototype.slice.call(arguments);
   console.log.apply(console, arguments);
  }
 }
@@ -241,12 +240,15 @@ var __test_count_total = __test_count_total || 0;
 function __test(cond, condstr, line, file)
 {
  "use strict";
+ var raw, f;
+ raw = file.split("/");
+ f = raw[raw.length - 1];
  if (cond) {
   if (__test_show_success) {
    printf(
     "%c%d:%s:%s",
     "font-weight:bold;color:green",
-    line, condstr, file
+    line, condstr, f
    );
   }
   __test_count_success++;
@@ -255,7 +257,7 @@ function __test(cond, condstr, line, file)
    printf(
     "%c%d:%s:%s",
     "font-weight:bold;color:red",
-    line, condstr, file
+    line, condstr, f
    );
   }
  }
