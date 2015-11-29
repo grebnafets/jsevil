@@ -1,0 +1,18 @@
+[33myellow[31mred[32mgreen[34mblue[30mblack[37mwhite[35mpurple[0m
+[43myellow[41mred[42mgreen[44mblue[40mblack[47mwhite[45mpurple[0m
+[31mnotsupported is unsupported, sorry.[0m
+unsupported[0m
+1.12oo
+1.123
+1.1235bar
+1.12346
+1.123457oo
+1.1234568
+1.12345679bar
+1.123456789
+1.1234567891oo
+1.12345678912
+1.123456789123bar
+1==1
+1==even more 1.12
+1==even more .. ugh, now it is just confusing... 500 0.35

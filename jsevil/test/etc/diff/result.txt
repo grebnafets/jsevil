@@ -1,0 +1,10 @@
+[1m[32m3:1 === 1:/home/mme/ws/js/jsevil/jsevil/test/src/integration.js[0m
+[1m[31m4:10 === 2:/home/mme/ws/js/jsevil/jsevil/test/src/integration.js[0m
+[1m[34mTest passed radio: [35m50.00%[0m
+[1m[34mTest passed radio: [35mNaN%[0m
+[1m[31m9:2 === 10:/home/mme/ws/js/jsevil/jsevil/test/src/integration.js[0m
+[1m[34mTest passed radio: [35m0.00%[0m
+[1m[32m11:true === true:/home/mme/ws/js/jsevil/jsevil/test/src/integration.js[0m
+[1m[34mTest passed radio: [35m50.00%[0m
+[1m[32m14:foobar:/home/mme/ws/js/jsevil/jsevil/test/src/integration.js[0m
+[1m[34mTest passed radio: [35m66.67%[0m
