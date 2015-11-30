@@ -1,5 +1,5 @@
 /* global test */
-/* global GUToken, gutoken_put */
+/* global GUToken, gutoken_put, gutoken_exists */
 
 (function test__GUToken() {
 	"use strict";
@@ -36,3 +36,18 @@
 	test(tok.info.defined === 2);
 }());
 
+(function test__gutoken_exists() {
+	"use strict";
+	var tok;
+	tok = new GUToken({});
+	gutoken_put(tok, "foo", {one: "one", two: "two"});
+	gutoken_put(tok, "bar", {one: "two", two: "one"});
+	test(gutoken_exists(tok, "f"));
+	test(gutoken_exists(tok, "fo"));
+	test(gutoken_exists(tok, "foo"));
+	test(gutoken_exists(tok, "b"));
+	test(gutoken_exists(tok, "ba"));
+	test(gutoken_exists(tok, "bar"));
+	test(!gutoken_exists(tok, "c"));
+	test(!gutoken_exists(tok, "d"));
+}());
