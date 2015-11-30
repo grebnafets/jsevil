@@ -1,10 +1,9 @@
 /* GroundUpToken */
 
-
-function GUToken(type)
+function GUToken(DefaultData)
 {
 	"use strict";
-	this.type = type || null;
+	this.def = DefaultData;
 	this.data = [];
 	this.info = {
 		total: 0,
@@ -21,7 +20,7 @@ function gutoken_put(gutoken, name, data)
 	for (i = 0; i < len; i += 1) {
 		buf  += name[i];
 		if (gutoken.data[buf] === undefined) {
-			gutoken.data[buf] = gutoken.type;
+			gutoken.data[buf] = new gutoken.def();
 			gutoken.info.total++;
 		}
 	}
@@ -29,7 +28,7 @@ function gutoken_put(gutoken, name, data)
 		gutoken.info.total++;
 		gutoken.info.defined++;
 	}
-	gutoken.data[name] = data;
+	gutoken.data[name] = new gutoken.def(data);
 	
 }
 

@@ -1,12 +1,10 @@
-/* global test */
+/* global test, test_show_result */
 /* global GUToken, gutoken_put, gutoken_exists */
 
 (function test__GUToken() {
 	"use strict";
 	var tok;
 	tok = new GUToken([]);
-	test(Array.isArray(tok.type));
-	test(tok.type.length === 0);
 	test(Array.isArray(tok.data));
 	test(tok.data.length === 0);
 	test(typeof tok.info === "object");
@@ -17,7 +15,15 @@
 (function test__gutoken_put() {
 	"use strict";
 	var tok;
-	tok = new GUToken({});
+	function Data(d)
+	{
+		if (d !== undefined) {
+			this.data = d;
+		} else {
+			this.data = {};
+		}
+	}
+	tok = new GUToken(Data);
 	gutoken_put(tok, "foo", {one: "one", two: "two"});
 	gutoken_put(tok, "bar", {one: "two", two: "one"});
 	test(typeof tok.data.f === "object");
@@ -28,10 +34,10 @@
 	test(typeof tok.data.bar === "object");
 	test(tok.data.c === undefined);
 	test(tok.data.d === undefined);
-	test(tok.data.foo.one === "one");
-	test(tok.data.foo.two === "two");
-	test(tok.data.bar.one === "two");
-	test(tok.data.bar.two === "one");
+	test(tok.data.foo.data.one === "one");
+	test(tok.data.foo.data.two === "two");
+	test(tok.data.bar.data.one === "two");
+	test(tok.data.bar.data.two === "one");
 	test(tok.info.total === 6);
 	test(tok.info.defined === 2);
 }());
@@ -39,7 +45,15 @@
 (function test__gutoken_exists() {
 	"use strict";
 	var tok;
-	tok = new GUToken({});
+	function Data(d)
+	{
+		if (d !== undefined) {
+			this.data = d;
+		} else {
+			this.data = {};
+		}
+	}
+	tok = new GUToken(Data);
 	gutoken_put(tok, "foo", {one: "one", two: "two"});
 	gutoken_put(tok, "bar", {one: "two", two: "one"});
 	test(gutoken_exists(tok, "f"));
@@ -51,3 +65,5 @@
 	test(!gutoken_exists(tok, "c"));
 	test(!gutoken_exists(tok, "d"));
 }());
+
+test_show_result();
