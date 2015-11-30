@@ -1,5 +1,5 @@
 /* global test */
-/* global GUToken */
+/* global GUToken, gutoken_put */
 
 (function test__GUToken() {
 	"use strict";
@@ -13,3 +13,26 @@
 	test(tok.info.total === 0);
 	test(tok.info.defined === 0);
 }());
+
+(function test__gutoken_put() {
+	"use strict";
+	var tok;
+	tok = new GUToken({});
+	gutoken_put(tok, "foo", {one: "one", two: "two"});
+	gutoken_put(tok, "bar", {one: "two", two: "one"});
+	test(typeof tok.data.f === "object");
+	test(typeof tok.data.fo === "object");
+	test(typeof tok.data.foo === "object");
+	test(typeof tok.data.b === "object");
+	test(typeof tok.data.ba === "object");
+	test(typeof tok.data.bar === "object");
+	test(tok.data.c === undefined);
+	test(tok.data.d === undefined);
+	test(tok.data.foo.one === "one");
+	test(tok.data.foo.two === "two");
+	test(tok.data.bar.one === "two");
+	test(tok.data.bar.two === "one");
+	test(tok.info.total === 6);
+	test(tok.info.defined === 2);
+}());
+

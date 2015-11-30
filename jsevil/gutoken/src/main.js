@@ -25,7 +25,12 @@ function gutoken_put(gutoken, name, data)
 			gutoken.info.total++;
 		}
 	}
+	if (gutoken.data[name] === undefined) {
+		gutoken.info.total++;
+		gutoken.info.defined++;
+	}
 	gutoken.data[name] = data;
+	
 }
 
 function gutoken_exists(gutoken, name)
