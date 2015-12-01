@@ -1,5 +1,6 @@
 Don't forget to define the environment variable JSEVIL_SEARCH_PATH so it
-points to the jsevil directory.
+points to the jsevil directory. You also need nodejs and you need the 
+xmlhttprequest module.
 
 JSEvil is for next generation of developers who have learned many spells from
 many different languages. They don't give a duck anymore and frequently ride
