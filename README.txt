@@ -7,7 +7,8 @@ many different languages. They don't give a duck anymore and frequently ride
 on Penguins. These hardened soles know that the idiomatic way is the path of
 DOOM. Not wanting to suffer from stockholm syndrom due to over use of
 exclusive-anti-social part of a language, they use the inclusive set of all
-languages that they hate equally! They are bent to wabble into glory!
+languages that they hate equally! (exept GO lang, I think I like it!)
+They are bent to wabble into glory!
 
 May the force be with you! Fly Penguin fly!
 
