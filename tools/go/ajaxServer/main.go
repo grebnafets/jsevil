@@ -28,14 +28,14 @@ type stateno struct {
 	shh bool; /* You might want to see !bad */
 	str string;
 	err error;
-	interupt bool;
+	interrupt bool;
 };
 
 func (s *stateno) Init() {
 	s.bad = false;
 	s.shh = true;
 	s.str = "";
-	s.interupt = false;
+	s.interrupt = false;
 }
 
 func (s *stateno) Set(state string, bad bool) {
@@ -66,7 +66,7 @@ func ajax(state *stateno) {
 	exitSignal := func(state *stateno) {
 		go func() {
 			for {
-				if (state.interupt) {
+				if (state.interrupt) {
 					os.Exit(EXIT_SUCCESS);
 				}
 				runtime.Gosched();
@@ -83,7 +83,7 @@ func ajax(state *stateno) {
 	};
 	exitHandler := func (w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Shutting down");
-		state.interupt = true;
+		state.interrupt = true;
 	};
 	http.HandleFunc("/", mainHandler);
 	http.HandleFunc("/exit", exitHandler);
