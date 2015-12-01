@@ -124,6 +124,8 @@ function printf(fmt)
 /* jshint ignore:start */
 if (typeof console !== "undefined") {
 	var print = function(msg) {console.log(msg);}
+}
+if (typeof window !== "undefined") {
 	var printf = function(msg) {
 		console.log.apply(console, arguments);
 	}

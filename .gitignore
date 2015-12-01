@@ -1,3 +1,4 @@
 *.swp
 unit.config.js
 bin/
+tools/go/ajaxServer/ajaxServer

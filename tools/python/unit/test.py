@@ -38,12 +38,16 @@ def ogreFight(ogreName):
 		command += " && printf '\x1b[3m'"
 		command += " && echo '%s:'" % (ogreName)
 		command += " && printf '\x1b[0m'"
-		command += " && js jsevil/%s/bin/unit.js" % (ogreName)
+		command += " && node jsevil/%s/bin/unit.js" % (ogreName)
 		command += " | sed -n 's/^./\t&/p'"
 	return command
 
 # Command army of ogres to fight!
 def commandArmyOfOgres():
+	command = ""
+	path = os.environ["JSEVIL_SEARCH_PATH"]
+	command = "%s/tools/go/ajaxServer/ajaxServer" % (path)
+	subprocess.Popen(command)
 	if (len(sys.argv) > 2):
 		for ogre in range(1, len(sys.argv)):
 			command = ogreFight(sys.argv[ogre])

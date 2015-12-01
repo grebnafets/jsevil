@@ -13,7 +13,7 @@ def summonOgres():
 def ogreFight(ogreName):
 	result   = "jsevil/%s/etc/diff/result.txt" % (ogreName)
 	expect   = "jsevil/%s/etc/diff/expect.txt" % (ogreName)
-	command  = "js jsevil/%s/bin/integration.js >" % (ogreName)
+	command  = "node jsevil/%s/bin/integration.js >" % (ogreName)
 	command += result
 	command += " && diff %s %s" % (expect, result)
 	return command

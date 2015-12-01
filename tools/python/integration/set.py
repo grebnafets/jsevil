@@ -39,7 +39,7 @@ def ogreFight(ogreName):
 	backup   = "jsevil/%s/etc/diff/expect.txt.%s.bak" % (ogreName, now)
 	expect   = "jsevil/%s/etc/diff/expect.txt" % (ogreName)
 	command  = "cat %s > %s" % (expect, backup)
-	command += " && js jsevil/%s/bin/integration.js >" % (ogreName)
+	command += " && node jsevil/%s/bin/integration.js >" % (ogreName)
 	command += expect
 	command += enchantOgres(ogreName, expect)
 	return command
