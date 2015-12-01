@@ -9,6 +9,7 @@ import (
 	"runtime";
 	"net/http";
 	"os";
+	"io/ioutil";
 );
 
 const (
@@ -75,9 +76,18 @@ func ajax(state *stateno) {
 	};
 	mainHandler := func (w http.ResponseWriter, r *http.Request) {
 		req := r.URL.Query().Get("data");
+		/*TODO: Associate get request with file and return contents. */
 		send := "What?";
 		if (req == "macro") {
 			send = "polo";
+		}
+		clen := r.Header.Get("Content-Length");
+		if (clen != "") {
+			defer r.Body.Close();
+			var body []byte;
+			body, state.err = ioutil.ReadAll(r.Body);
+			state.ErrCheck();
+			send += string(body);
 		}
 		fmt.Fprintf(w, "%s", send);
 	};
