@@ -1,22 +1,19 @@
 /* jshint laxbreak:true */
-/* global XMLHttpRequest:true, printf, STATE_OK, STATUS_OK, InvalidAccessError */
+/* global XMLHttpRequest:true, STATE_OK, STATUS_OK */
 
 /*
- * These AJAX functions may not work for all user agents.
- * See why within the comments below. (The reason is political)
+ * These AJAX functions may not work for all user agents because the specs
+ * don't favor sync requests.
  *
  * Anyway, this does not prevent me from using these methods from testing
- * server-client relationship within the terminal. I will simply swap these
- * functions later for browser version using "sleep/wait" and DOM as a
- * medium. Not really practical, but what choices am I left with?
- * Callbacks aren't going to help me make unions from different requests if
- * they are async.
+ * server-client relationship within the terminal but I am going to have to
+ * replace them if sync is considered harmfully inconvenient to the user.
  * */
 
 function get(src, command)
 {
 	"use strict";
-	var http, req, data, areYouKiddingMe;
+	var http, req, data;
 	http = new XMLHttpRequest();
 	data = null;
 	req  = src;
@@ -31,57 +28,15 @@ function get(src, command)
 	if (command !== undefined) {
 		req += "?" + command;
 	}
-	try {
-		http.open("GET", req, false);
-		http.send();
-	} catch (e) {
-		/* https://xhr.spec.whatwg.org: [
-		 * Synchronous XMLHttpRequest outside of workers is in the
-		 * process of being removed from the web platform as it has 
-		 * detrimental effects to the end user's experience. 
-		 * (This is a long process that takes many years.) 
-		 * Developers must not pass false for the async argument when 
-		 * the JavaScript global environment is a document environment.
-		 * User agents are strongly encouraged to warn about such
-		 * usage in developer tools and may experiment with throwing 
-		 * an InvalidAccessError exception when it occurs.
-		 * ]
-		 *
-		 * This means the programmers of the user agent have to be
-		 * _very_ careful how they implement this "feature".
-		 *
-		 * If they are not careful, they might end up ruining
-		 * encapsulation of sync calls within async call.
-		 * That is not going to sit well for experienced user of
-		 * javaScript API and it is going to be completely backwards
-		 * far that user agent!
-		 *
-		 * Forcing the use of DOM as a medium to union data from
-		 * different requests is not ideal approach.
-		 * */
-		if (e instanceof InvalidAccessError) {
-			areYouKiddingMe = "Sorry, I can't give you AJAX";
-			areYouKiddingMe += " because the user agent might be misunderstanding";
-			areYouKiddingMe += " https://xhr.spec.whatwg.org.";
-			areYouKiddingMe += " This misunderstanding is understandible given how";
-			areYouKiddingMe += " the specs are unrealistic.";
-			areYouKiddingMe += " Hint: If sync request is encapsulated";
-			areYouKiddingMe += " within setTimeout then it is async.";
-			areYouKiddingMe += " If I was the compiler guy, I would just";
-			areYouKiddingMe += " simply ignore this part of the spec.";
-			areYouKiddingMe += " It is not up to the compiler guy to decite";
-			areYouKiddingMe += " how the API should be used.";
-			printf("%s", areYouKiddingMe);
-			data = areYouKiddingMe;
-		}
-	}
+	http.open("GET", req, false);
+	http.send();
 	return data;
 }
 
 function post(src, command, body)
 {
 	"use strict";
-	var http, req, data, areYouKiddingMe;
+	var http, req, data;
 	http  = new XMLHttpRequest();
 	data  = null;
 	req   = src;
@@ -96,50 +51,8 @@ function post(src, command, body)
 	if (command !== undefined) {
 		req += "?" + command;
 	}
-	try {
-		http.open("POST", req, false);
-		http.send(body);
-	} catch (e) {
-		/* https://xhr.spec.whatwg.org: [
-		 * Synchronous XMLHttpRequest outside of workers is in the
-		 * process of being removed from the web platform as it has 
-		 * detrimental effects to the end user's experience. 
-		 * (This is a long process that takes many years.) 
-		 * Developers must not pass false for the async argument when 
-		 * the JavaScript global environment is a document environment.
-		 * User agents are strongly encouraged to warn about such
-		 * usage in developer tools and may experiment with throwing 
-		 * an InvalidAccessError exception when it occurs.
-		 * ]
-		 *
-		 * This means the programmers of the user agent have to be
-		 * _very_ careful how they implement this "feature".
-		 *
-		 * If they are not careful, they might end up ruining
-		 * encapsulation of sync calls within async call.
-		 * That is not going to sit well for experienced user of
-		 * javaScript API and it is going to be completely backwards
-		 * far that user agent!
-		 *
-		 * Forcing the use of DOM as a medium to union data from
-		 * different requests is not ideal approach.
-		 * */
-		if (e instanceof InvalidAccessError) {
-			areYouKiddingMe = "Sorry, I can't give you AJAX";
-			areYouKiddingMe += " because the user agent might be misunderstanding";
-			areYouKiddingMe += " https://xhr.spec.whatwg.org.";
-			areYouKiddingMe += " This misunderstanding is understandible given how";
-			areYouKiddingMe += " the specs are unrealistic.";
-			areYouKiddingMe += " Hint: If sync request is encapsulated";
-			areYouKiddingMe += " within setTimeout then it is async.";
-			areYouKiddingMe += " If I was the compiler guy, I would just";
-			areYouKiddingMe += " simply ignore this part of the spec.";
-			areYouKiddingMe += " It is not up to the compiler guy to decite";
-			areYouKiddingMe += " how the API should be used.";
-			printf("%s", areYouKiddingMe);
-			data = areYouKiddingMe;
-		}
-	}
+	http.open("POST", req, false);
+	http.send(body);
 	return data;
 }
 
