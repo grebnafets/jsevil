@@ -13,8 +13,12 @@ test(data === "polofoobar");
 function myAsyncModule1(foo)
 {
 	"use strict";
+	var data, old;
 	data = post("http://localhost:8080", "data=macro", foo);
 	test(data === "polo" + foo);
+	old = data;
+	data = get("http://localhost:8080");
+	test(data + old === "What?" + old);
 }
 myAsyncModule1.timeout = 10;
 
