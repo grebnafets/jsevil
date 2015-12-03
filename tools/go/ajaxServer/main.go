@@ -89,9 +89,11 @@ func ajax(state *stateno) {
 			state.ErrCheck();
 			send += string(body);
 		}
+		w.Header().Set("Access-Control-Allow-Origin", "*");
 		fmt.Fprintf(w, "%s", send);
 	};
 	exitHandler := func (w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*");
 		fmt.Fprintf(w, "Shutting down");
 		state.interrupt = true;
 	};

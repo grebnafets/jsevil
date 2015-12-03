@@ -125,7 +125,13 @@ function printf(fmt)
 if (typeof console !== "undefined") {
 	var print = function(msg) {console.log(msg);}
 }
-if (typeof window !== "undefined") {
+if (0
+	|| typeof window !== "undefined"
+	|| (1
+		&& typeof WorkerGlobalScope !== "undefined"
+		&& self instanceof WorkerGlobalScope
+	)
+) {
 	var printf = function(msg) {
 		console.log.apply(console, arguments);
 	}
