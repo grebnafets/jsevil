@@ -56,5 +56,7 @@ def commandArmyOfOgres():
 		for ogre in os.listdir(sauronHome):
 			command = ogreFight(ogre)
 			subprocess.call(command, shell=True)
+	command = "wget -O- -q http://localhost:8080/exit > /dev/null"
+	subprocess.call(command, shell=True)
 
 commandArmyOfOgres()

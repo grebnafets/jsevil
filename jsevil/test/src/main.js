@@ -6,6 +6,7 @@ var __test_show_failure = __test_show_failure || false;
 var __test_show_result = __test_show_result || false;
 var __test_count_success = __test_count_success || 0;
 var __test_count_total = __test_count_total || 0;
+var testprint = "";
 
 function __test(cond, condstr, line, file)
 {
@@ -15,6 +16,9 @@ function __test(cond, condstr, line, file)
 	f = raw[raw.length - 1];
 	if (cond) {
 		if (__test_show_success) {
+			if (testprint.length) {
+				printf(testprint);
+			}
 			printf(
 				"%c%d:%s:%s",
 				"font-weight:bold;color:green",
@@ -24,6 +28,9 @@ function __test(cond, condstr, line, file)
 		__test_count_success++;
 	} else {
 		if (__test_show_failure) {
+			if (testprint.length) {
+				printf(testprint);
+			}
 			printf(
 				"%c%d:%s:%s",
 				"font-weight:bold;color:red",
