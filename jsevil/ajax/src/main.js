@@ -2,13 +2,36 @@
 /* global XMLHttpRequest:true, STATE_OK, STATUS_OK */
 
 /*
- * These AJAX functions may not work for all user agents because the specs
- * don't favor sync requests.
+ * All requests are made in _sync_!
  *
- * Anyway, this does not prevent me from using these methods from testing
- * server-client relationship within the terminal but I am going to have to
- * replace them if sync is considered harmfully inconvenient to the user.
+ * This is by design!
+ *
+ * You don't need the requests to be in async to get async behavior.
  * */
+
+/* 
+ * When you need to make request for the main thread, use async and
+ * store the contents within the DOM. You can hide the variable with CSS or
+ * whatever.
+ *
+ * If you need to make complex requests for the main thread, encapsulate these
+ * request, work with it and then store it to the DOM. This will requre you
+ * to implement fallback behavior in case requests are blocked for some reason.
+ *
+ * I will define fallback behavior native to the functions when it makes
+ * sense.
+ * */
+var GLOBAL_FAKEDOM = {};
+
+function toDomGet(domel, src, command)
+{
+	"use strict";
+}
+
+function toDomPost(domel, src, command, body)
+{
+	"use strict";
+}
 
 function get(src, command)
 {
