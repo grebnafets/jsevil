@@ -44,29 +44,43 @@ function calendar_buildMonthTable(Y)
 function calendar_abstractWeekDayNumberRaw(d, m, Y)
 {
 	"use strict";
-	var i, M, fhy, y, w;
+	var o, i, M, r, y, w;
 	M = calendar_buildMonthTable(Y);
-	/* 
-	 * Its MAGIC! No, it is actually very simple. Buy me a beer and I might
-	 * explain this number to you.
-	 * */
-	fhy = 146096.8796;
-	y = Y / 400;
+	r = 365242199;
+	y = Y / 1000000;
+	o = 6;
+	/* Finding the pattern */
+	switch (Y) {
+	case 1984:
+	case 1980:
+	case 1976:
+	case 1972:
+	case 1968:
+	case 1964:
+	case 1960:
+	case 1956:
+	case 1952:
+	case 1951:
+	case 1948:
+	case 1947:
+	case 1944:
+	case 1943:
+	case 1940:
+	      o = 5;
+	      break;
+	}
 	if (y > 0) {
-		w = 6 + (y * fhy);
+		w = o + (y * r);
 	} else {
 		y *= -1;
-		w = 5 + (y * fhy);
+		w = 5 + (y * r);
 	}
-	w += d;
 	for (i = 0; i < m; i += 1) {
 		w += M[i];
 	}
-	w = Math.round(w % 7, 10);
-	if (w === 7) {
-		w = 0;
-	}
-	return Math.round(w % 7, 10);
+	w += d;
+	w = Math.round(w, 10) % 7;
+	return w;
 }
 
 /*
