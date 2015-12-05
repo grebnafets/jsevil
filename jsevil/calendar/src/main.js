@@ -1,5 +1,6 @@
 /* jshint laxbreak:true */
-function isLeapYear(year)
+
+function calendar_isLeapYear(year)
 {
 	"use strict";
 	var isLeap = false;
@@ -13,14 +14,38 @@ function isLeapYear(year)
 	return isLeap;
 }
 
-function getYearDaysCount(year)
+function calendar_getYearDaysCount(year)
 {
 	"use strict";
-	return isLeapYear(year) ? 366: 365;
+	return calendar_isLeapYear(year) ? 366: 365;
 }
+
+function calendar_abstractCentury(Y)
+{
+	"use strict";
+	var c;
+	c = 0;
+	if (Y > 100) {
+		c = parseInt(Y / 100, 10);
+	}
+	return c;
+}
+
+function calendar_abstractYear(Y)
+{
+	"use strict";
+	var y;
+	y = Y;
+	if (Y > 100) {
+		y = parseInt(Y -(calendar_abstractCentury(Y) * 100), 10);
+	}
+	return y;
+}	
 
 /* jshintUnusedHack */
 if (false) {
-	isLeapYear();
-	getYearDaysCount();
+	calendar_isLeapYear();
+	calendar_getYearDaysCount();
+	calendar_abstractCentury();
+	calendar_abstractYear();
 }
