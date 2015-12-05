@@ -82,6 +82,7 @@ var nonLeapYears1800_2400 = [];
 		 * I don't care what other calculators say about this time.
 		 * I am going to be bold and say mine way is right and theirs
 		 * is wrong.
+		 * And I was wrong to be bold... Serves me right...
 		 * */
 		{d:29, m:11, y:-1, answ: 5},
 		{d:30, m:11, y:-1, answ: 6},
@@ -95,11 +96,54 @@ var nonLeapYears1800_2400 = [];
 		testprint = sprintf("%d %d %d", a[i].d, a[i].m, a[i].y);
 		test(calendar_abstractWeekDayNumber(state, a[i].d, a[i].m, a[i].y) === a[i].answ);
 	}
+	testprint = "";
 	test(!state.bad);
 	testprint = sprintf("%d %d %d", a[i].d, a[i].m, a[i].y);
 	test(calendar_abstractWeekDayNumber(state, a[i].d, a[i].m, a[i].y) === a[i].answ);
+	testprint = "";
 	test(state.bad);
 	test(state.states[state.state].fmt === "There is no year 0.");
+}());
+
+printf("start here!");
+
+(function test__calendar_superTest_abstractWeekDaysNumber(){
+	"use strict";
+	var i, x, y, m, d, M, arbitrary, a, state;
+	function next(x) {
+		if (x === 0) {
+			x = 6;
+		} else {
+			x--;
+		}
+		return x;
+	}
+	x = 5;
+	state = Object.create(calendar_state);
+	arbitrary = [];
+	for (y = 2015; y > 1000; y -= 1) {
+		M = calendar_buildMonthTable(y);
+		for (m = 11; m > -1; m -= 1) {
+			for (d = M[m]; d > 0; d -= 1) {
+				x = next(x);
+				arbitrary.push({
+					d:d, m:m, y:y, answ: x
+				});
+			}
+		}
+	}
+
+	a = arbitrary;
+	for (i = 0; i < arbitrary.length; i += 1) {
+		testprint = sprintf(
+			"%d %d %d \t %d === %d",
+			a[i].d, a[i].m, a[i].y,
+			calendar_abstractWeekDayNumber(state, a[i].d, a[i].m, a[i].y),
+		       	a[i].answ
+		);
+		test(calendar_abstractWeekDayNumber(state, a[i].d, a[i].m, a[i].y) === a[i].answ);
+	}
+	testprint = "";
 }());
 
 test_show_result();

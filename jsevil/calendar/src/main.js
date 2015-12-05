@@ -29,19 +29,28 @@ function calendar_getYearDaysCount(year)
 	return calendar_isLeapYear(year) ? 366: 365;
 }
 
+function calendar_buildMonthTable(Y)
+{
+	"use strict";
+	var tm;
+	tm = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+	if (calendar_isLeapYear(Y)) {
+		tm[1] += 1;
+	}
+	return tm;
+}
+
+
 function calendar_abstractWeekDayNumberRaw(d, m, Y)
 {
 	"use strict";
 	var i, M, fhy, y, w;
-	M = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-	if (calendar_isLeapYear(Y)) {
-		M[1] += 1;
-	}
+	M = calendar_buildMonthTable(Y);
 	/* 
 	 * Its MAGIC! No, it is actually very simple. Buy me a beer and I might
 	 * explain this number to you.
 	 * */
-	fhy = 146096.88;
+	fhy = 146096.8796;
 	y = Y / 400;
 	if (y > 0) {
 		w = 6 + (y * fhy);
@@ -53,7 +62,11 @@ function calendar_abstractWeekDayNumberRaw(d, m, Y)
 	for (i = 0; i < m; i += 1) {
 		w += M[i];
 	}
-	return parseInt(w % 7, 10);
+	w = Math.round(w % 7, 10);
+	if (w === 7) {
+		w = 0;
+	}
+	return Math.round(w % 7, 10);
 }
 
 /*
