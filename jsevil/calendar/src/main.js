@@ -52,6 +52,7 @@ function calendar_abstractWeekDayNumberBC(d, m, Y)
 	"use strict";
 	var w, M, year, days, offs;
 	M = calendar_buildMonthTable(Y);
+	/* Reverse months order. */
 	M.reverse();
 	days = 0;
 	offs = 0;
