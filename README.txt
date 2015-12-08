@@ -1,40 +1,22 @@
-Don't forget to define the environment variable JSEVIL_SEARCH_PATH so it
-points to the jsevil directory. You also need nodejs and you need the 
-xmlhttprequest module.
+This is a simple a goofy toy project that does bad things but is still so
+cheese that I can't bring my self to do the right thing and drop it.
 
-JSEvil is for next generation of developers who have learned many spells from
-many different languages. They don't give a duck anymore and frequently ride
-on Penguins. These hardened soles know that the idiomatic way is the path of
-DOOM. Not wanting to suffer from stockholm syndrom due to over use of
-exclusive-anti-social part of a language, they use the inclusive set of all
-languages that they hate equally! (except GO lang, I think I like it!)
-They are bent to wabble into glory!
+Origionally I just wanted to be able to develop random stuff in javaScript
+in a terminal. I didn't know the developers of Node.js have already developed
+everything I wanted so jsevil is now basically just a wrapper around it.
 
+If you find anything you like, take it.  Unless it is me you actually like.
+Then you can't just take me, I am a living thing you know. I am also a burden,
+I eat alot of pizza, drink lot of coffee and then I wabble in circles thinking
+out loud in binary. I am also a dude and I grow beard for one whole month and
+then I shave it off. And _NO_, I am _not_ a mascot!
+
+Anyway, if you are a bad boy/girl and clone jsevil, then don't forget to
+define the environment variable JSEVIL_SEARCH_PATH so it
+points to the downloaded jsevil directory.
+You are of course going need node.js if you want to be able to do the good
+stuff and do http request. (U need xmlhttprequest module).
+You also need C and GO language compiler and python interpreter...
+
+Anyway, have fun!
 May the force be with you! Fly Penguin fly!
-
-Oh, I almost forgot.
-
-JSEvil is a simple framework that is uses environment variables, makefiles,
-preprocessors, post classification and scripts so you can do more without
-the usual limitations that follows overdose of "abstractions".
-Post classification is simply about doing classes after all the members are
-known.
-
-Right now it has:
-
-sprintf:
-It takes in fmt,... and returns the formatted string.
-
-printf:
-Same as sprintf but it outputs the formmated string to the terminal or
-delegates the responsibility to console.log if it is defined.
-
-test:
-Test is actually a macro. Yes, you read right. You didn't expect less from
-jsEVIL, now did you? I did use "eval" at first, abstracted as "evil" within
-a variable. Then I thought it was not evil enough and thought it was lame to
-evaluate string to code so I reversed it to evaluate code to string via macro.
-Yeah, I know. Me crafty stupid spankey monkey bastard.
-
-My only regred is the fact I don't have the goto statement...
-..Yet :) *evil laughter*
