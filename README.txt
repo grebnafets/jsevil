@@ -1,4 +1,4 @@
-This is a simple a goofy toy project that does bad things but is still so
+This is a simple a goofy toy project that does "bad" things* but is still so
 cheese that I can't bring my self to do the right thing and drop it.
 
 Origionally I just wanted to be able to develop random stuff in javaScript
@@ -20,3 +20,5 @@ You also need C and GO language compiler and python interpreter...
 
 Anyway, have fun!
 May the force be with you! Fly Penguin fly!
+
+*Bad as in not using any standards, using macroes and so on.
