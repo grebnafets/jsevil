@@ -2,19 +2,19 @@
 var data;
 data = get("http://localhost:8080");
 test(data === "What?");
-data = get("http://localhost:8080", "data=macro");
+data = get("http://localhost:8080?data=macro");
 test(data === "polo");
 
 data = post("http://localhost:8080");
 test(data === "What?");
-data = post("http://localhost:8080", "data=macro", "foobar");
+data = post("http://localhost:8080?foo=bar&data=macro", "foobar");
 test(data === "polofoobar");
 
 function myAsyncModule1(foo)
 {
 	"use strict";
 	var data, old;
-	data = post("http://localhost:8080", "data=macro", foo);
+	data = post("http://localhost:8080?data=macro", foo);
 	test(data === "polo" + foo);
 	old = data;
 	data = get("http://localhost:8080");
@@ -25,7 +25,7 @@ myAsyncModule1.timeout = 10;
 function myAsyncModule2(bar)
 {
 	"use strict";
-	data = post("http://localhost:8080", "data=macro", bar);
+	data = post("http://localhost:8080?data=macro", bar);
 	test(data === "polo" + bar);
 }
 

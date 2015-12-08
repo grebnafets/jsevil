@@ -2,81 +2,87 @@
 /* global XMLHttpRequest:true, STATE_OK, STATUS_OK */
 
 /*
- * All requests are made in _sync_!
- *
- * This is by design!
- *
- * You don't need the requests to be in async to get async behavior.
+ * Default behavior is sending request in sync. Otherwise the function is
+ * not going to return requested data.
  * */
 
-/* 
- * When you need to make request for the main thread, use async and
- * store the contents within the DOM. You can hide the variable with CSS or
- * whatever.
- *
- * If you need to make complex requests for the main thread, encapsulate these
- * request, work with it and then store it to the DOM. This will requre you
- * to implement fallback behavior in case requests are blocked for some reason.
- *
- * I will define fallback behavior native to the functions when it makes
- * sense.
- * */
-var GLOBAL_FAKEDOM = {};
-
-function toDomGet(domel, src, command)
+function request(obj)
 {
 	"use strict";
-}
-
-function toDomPost(domel, src, command, body)
-{
-	"use strict";
-}
-
-function get(src, command)
-{
-	"use strict";
-	var http, req, data;
+	var http, type, path, data, body, sync, head, cack;
 	http = new XMLHttpRequest();
+	type = obj.type || "POST";
+	path = obj.path || "";
+	body = obj.body || null;
+	head = obj.head || [];
+	sync = obj.sync || true;
+	cack = obj.cack || null;
 	data = null;
-	req  = src;
 	http.onreadystatechange = function() {
 		if (1
 			&& http.readyState === STATE_OK
 			&& http.status === STATUS_OK
 		) {
 			data = http.responseText;
+			if (cack !== null) {
+				data = cack(data);
+			}
 		}
-	};
-	if (command !== undefined) {
-		req += "?" + command;
-	}
-	http.open("GET", req, false);
-	http.send();
-	return data;
-}
 
-function post(src, command, body)
-{
-	"use strict";
-	var http, req, data;
-	http  = new XMLHttpRequest();
-	data  = null;
-	req   = src;
-	http.onreadystatechange = function() {
-		if (1
-			&& http.readyState === STATE_OK
-			&& http.status === STATUS_OK
-		) {
-			data = http.responseText;
-		}
 	};
-	if (command !== undefined) {
-		req += "?" + command;
-	}
-	http.open("POST", req, false);
+	http.open(type, path, !sync);
+	(function (){
+		var i, len;
+		len = head.length;
+		for (i = 0; i < len; i += 1) {
+			http.setRequestHeader(head[i].key, head[i].val);
+		}
+	}());
 	http.send(body);
 	return data;
+}
+
+function get(queryString)
+{
+	"use strict";
+	return request({
+		head: [{key: "rtype", val: "get"}],
+		type: "GET",
+		path: queryString,
+	});
+}
+
+function del(queryString)
+{
+	"use strict";
+	return request({
+		head: [{key: "rtype", val: "del"}],
+		type: "GET",
+		path: queryString
+	});
+}
+
+
+function post(queryString, body)
+{
+	"use strict";
+	return request({
+		head: [{key: "rtype", val: "post"}],
+		type: "POST",
+		path: queryString,
+		body: body
+	});
+}
+
+function put(src, queryString, body)
+{
+	"use strict";
+	return request({
+		head: [{key: "rtype", val: "put"}],
+		type: "POST",
+		path: queryString,
+		body: body
+	});
 }
 
 function asyncModule(func)
@@ -91,7 +97,9 @@ function asyncModule(func)
 }
 
 if (false) {
+	del();
 	get();
 	post();
+	put();
 	asyncModule();
 }
