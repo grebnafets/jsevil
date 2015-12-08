@@ -84,7 +84,7 @@ function calendar_abstractWeekDayNumberBCE(d, m, Y)
 	 *
 	 * I could also have just changed the algorithm, but the focal point
 	 * of the B.C.E. is that it is the inverse of the C.E. function and
-	 * I wanted to be that fact intact.
+	 * I wanted that fact to be intact.
 	 * */
 	offs = 11 - m;
 	while (offs--) {
