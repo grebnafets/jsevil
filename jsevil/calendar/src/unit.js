@@ -103,7 +103,8 @@ function test__calendar_semiTest_abstractWeekDaysNumber()
 	test(state.states[state.state].fmt === "There is no year 0.");
 }
 
-function test__calendar_superTest_abstractWeekDaysNumberAD()
+/* TODO: Make the tests faster by simply taking a random sample. */
+function test__calendar_superTest_abstractWeekDaysNumberCE()
 {
 	"use strict";
 	var i, x, y, m, d, M, arbitrary, a, state, firstDay;
@@ -137,10 +138,10 @@ function test__calendar_superTest_abstractWeekDaysNumberAD()
 	//printf("First day is: %d", firstDay);
 }
 
-function test__calendar_superTest_abstractWeekDaysNumberBC()
+function test__calendar_superTest_abstractWeekDaysNumberBCE()
 {
 	"use strict";
-	// Based on above calculations, we calculate B.C. the same way
+	// Based on above calculations, we calculate B.C.E. the same way
 	// using first day as an anchor
 	var i, x, y, m, d, M, a, state, firstDay;
 	firstDay = 1;
@@ -174,7 +175,7 @@ function test__calendar_superTest_abstractWeekDaysNumberBC()
 test__calendar_isLeapYear();
 test__calendar_getDaysYearCount();
 test__calendar_semiTest_abstractWeekDaysNumber();
-test__calendar_superTest_abstractWeekDaysNumberAD();
-test__calendar_superTest_abstractWeekDaysNumberBC();
+test__calendar_superTest_abstractWeekDaysNumberCE();
+test__calendar_superTest_abstractWeekDaysNumberBCE();
 
 test_show_result();
