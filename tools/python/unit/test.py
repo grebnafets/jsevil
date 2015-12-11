@@ -2,9 +2,10 @@
 import subprocess, os, sys
 
 sauronHome = "jsevil"
-SING_FAILURE = 1
-SING_SUCCESS = 2
-SING_RESULT  = 4
+SING_FAILURE  = 1
+SING_SUCCESS  = 2
+SING_RESULT   = 4
+SING_HARDCORE = 8
 
 # Get special Ogres
 def bardPrepareSongs():
@@ -25,6 +26,8 @@ def bardSing(ogreName):
 			song += "__test_show_success = true;"
 		if (int(songs[1]) & SING_RESULT == SING_RESULT):
 			song += "__test_show_result = true;"
+		if (int(songs[1]) & SING_HARDCORE == SING_HARDCORE):
+			song += "test_show_hardcore = true;"
 	return song
 
 # Command one ogre to fight!

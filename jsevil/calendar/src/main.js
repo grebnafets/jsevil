@@ -1,4 +1,5 @@
 /* global Stateno, stateno_create, stateno_set */
+/* global sprintf */
 /* jshint laxbreak:true */
 
 /* 
@@ -109,6 +110,11 @@ function calendar_abstractWeekDayNumberBCE(d, m, Y)
 	 * This will change it from 0 1 2 3 4 5 6 to 0 1 2 3 4 5 6
 	 * */
 	w = 6 - w;
+	/* We start counting from -1 so w can be negative resulting in 
+	 * positive 7. */
+	if (w === 7) {
+		w = 0;
+	}
 	return w;
 }
 
@@ -180,6 +186,171 @@ function calendar_abstractWeekDayNumber(state, d, m, Y)
 	return w;
 }
 
+function calendar_display(display, terminal, dom)
+{
+	"use strict";
+	var res = null;
+	if (typeof document === "undefined") {
+		if (terminal !== undefined || terminal !== null) {
+			res = terminal(display);
+		}
+	} else {
+		if (dom !== undefined || dom !== null) {
+			res = dom(display);
+		}
+	}
+	return res;
+}
+
+function calendar_buildDisplayMonthHead(state, display, m, y, customize)
+{
+	"use strict";
+	var r;
+	calendar_display(
+		display,
+		function (display) {
+			if (customize.head === undefined) {
+				display.fmt += "%c";
+				display.arg.push(
+					"color:green;font-weight:bold"
+				);
+				display.fmt += "%d %d\n";
+				display.arg.push(display.y);
+				display.arg.push(display.m + 1);
+				for (r = 0; r < 7; r += 1) {
+					display.fmt += "%s\t";
+					display.arg.push(
+						calendar_weekDayNumberToString(
+							r, {alias:true}
+						)
+					);
+				}
+				display.fmt += "\n";
+			} else {
+				customize.head.terminal(display);
+			}
+		},
+		null
+	);
+
+}
+
+function calendar_buildDisplayMonthPreDays(state, display, customize)
+{
+	"use strict";
+	calendar_display(
+		display,
+		function (display) {
+			if (customize.pre === undefined) {
+				display.fmt += "%c%d\t";
+				display.arg.push("color:yellow");
+				display.arg.push(display.d);
+			} else {
+				customize.pre.terminal(display);
+			}
+		},
+		null
+	);
+
+}
+
+function calendar_buildDisplayMonthDays(state, display, customize)
+{
+	"use strict";
+	calendar_display(
+		display,
+		function (display) {
+			if (customize.days === undefined) {
+				display.fmt += "%c%d\t";
+				display.arg.push("color:blue");
+				display.arg.push(display.d);
+			} else {
+				customize.days.terminal(display);
+			}
+		},
+		null
+	);
+}
+
+function calendar_buildDisplayMonthPostDays(state, display, customize)
+{
+	"use strict";
+	calendar_display(
+		display,
+		function (display) {
+			if (customize.post === undefined) {
+				display.fmt += "%c%d\t";
+				display.arg.push("color:yellow");
+				display.arg.push(display.d);
+			} else {
+				customize.post.terminal(display);
+			}
+		},
+		null
+	);
+
+}
+
+function calendar_buildDisplayMonth(state, m, y, customize)
+{
+	"use strict";
+	var r, c, o, d, M, firstWeekDay, numberOfDays, display;
+	customize = customize || {};
+	M = calendar_buildMonthTable(y);
+	firstWeekDay = calendar_abstractWeekDayNumber(state, 1, m, y);
+	numberOfDays = M[m];
+	r = c = 0;
+	d = 1;
+	display = {
+		fmt: "",
+		arg: [],
+		str: "",
+		d: 1,
+		m: m,
+		y: y
+	};
+	o = M[m - 1 > -1 ? m - 1 : 11];
+	/* header */
+	calendar_buildDisplayMonthHead(state, display, m, y, customize);
+	for (c = 0; c < 6; c += 1) {
+		for (r = 0; r < 7; r += 1) {
+			if (firstWeekDay === r) {
+				firstWeekDay = -1;
+			} else if (numberOfDays === d - 1) {
+				numberOfDays = -1;
+			}
+			if (d === M[m] + 1) {
+				d = 1;
+			}
+			if (firstWeekDay > 0) {
+				o++;
+				display.d = (o - firstWeekDay);
+				calendar_buildDisplayMonthPreDays(
+					state, display, customize
+				);
+				/* Before*/
+			} else if (numberOfDays > 0) {
+				display.d = d;
+				calendar_buildDisplayMonthDays(
+					state, display, customize
+				);
+				d++;
+			} else {
+				display.d = d;
+				calendar_buildDisplayMonthPostDays(
+					state, display, customize
+				);
+				d++;
+			}
+		}
+		if (typeof document === "undefined") {
+			display.fmt += "\n";
+		}
+	}
+	display.str = sprintf(display.fmt, display.arg);
+	return display.str;
+}
+
 /* Days in English is fallback behavior. */
 function calendar_weekDayNumberToString(w, conf)
 {
@@ -214,4 +385,5 @@ if (false) {
 	calendar_weekDayNumberToString();
 	calendar_abstractWeekDayNumberCE();
 	calendar_abstractWeekDayNumberBCE();
+	calendar_buildDisplayMonth();
 }

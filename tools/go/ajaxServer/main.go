@@ -62,6 +62,7 @@ func postValidate(state *stateno) {
 	}
 }
 /* }}} */
+
 func ajax(state *stateno) {
 	defer postValidate(state);
 	exitSignal := func(state *stateno) {
@@ -74,24 +75,61 @@ func ajax(state *stateno) {
 			}
 		}();
 	};
-	mainHandler := func (w http.ResponseWriter, r *http.Request) {
-		req := r.URL.Query().Get("data");
-		/*TODO: Associate get request with file and return contents. */
-		send := "What?";
-		if (req == "macro") {
-			send = "polo";
-		}
+/*
+	calendarTest := func(w http.ResponseWriter, r *http.Request) {
+		d := r.URL.Query().Get("d");
+		m := r.URL.Query().Get("m");
+		y := r.URL.Query().Get("y");
+	};
+*/
+	getBody := func(w http.ResponseWriter, r *http.Request) string {
+		var contents string;
 		clen := r.Header.Get("Content-Length");
 		if (clen != "") {
 			defer r.Body.Close();
 			var body []byte;
 			body, state.err = ioutil.ReadAll(r.Body);
 			state.ErrCheck();
-			send += string(body);
+			contents = string(body);
+		} else {
+			contents = "";
 		}
-		w.Header().Set("Access-Control-Allow-Origin", "*");
-		fmt.Fprintf(w, "%s", send);
+		return contents;
 	};
+
+	sendResponce := func(w http.ResponseWriter, str string) {
+		w.Header().Set("Access-Control-Allow-Origin", "*");
+		fmt.Fprintf(w, "%s", str);
+	};
+
+	ajaxTest := func(w http.ResponseWriter, r *http.Request) {
+		res  := "What?";
+		rtype := r.Header.Get("rtype");
+		testQuery := r.URL.Query().Get("test");
+		if (testQuery == "macro") {
+			res = "polo";
+		}
+		switch (rtype) {
+		case "get", "post", "put", "del":
+			res += rtype;
+		}
+		res += getBody(w, r);
+		sendResponce(w, res);
+	};
+
+	mainHandler := func (w http.ResponseWriter, r *http.Request) {
+		token := r.Header.Get("tok");
+		user := r.Header.Get("user");
+		switch (token) {
+		case "test":
+			if (user == "public") {
+				ajaxTest(w, r);
+			} else {
+				sendResponce(w, "");
+			}
+		}
+	};
+
 	exitHandler := func (w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*");
 		fmt.Fprintf(w, "Shutting down");

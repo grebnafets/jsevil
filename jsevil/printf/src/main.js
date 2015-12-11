@@ -16,7 +16,7 @@ function sprintf(fmt)
 	k = 1;
 	offset = 0;
 	style  = 0;
-	if (typeof arguments[1] === "object") {
+	if (Array.isArray(arguments[1])) {
 		args = arguments[1];
 		k = 0;
 	} else {

@@ -42,43 +42,71 @@ function request(obj)
 	return data;
 }
 
-function get(queryString)
+function get(queryString, token, user)
 {
 	"use strict";
+	var tok, u;
+	tok = token || "";
+	u   = user || "public"; 
 	return request({
-		head: [{key: "rtype", val: "get"}],
+		head: [
+			{key: "rtype", val: "get"},
+			{key: "tok", val: tok},
+			{key: "user", val: "public"}
+		],
 		type: "GET",
 		path: queryString,
 	});
 }
 
-function del(queryString)
+function del(queryString, token, user)
 {
 	"use strict";
+	var tok, u;
+	tok = token || "";
+	u = user || "public"; 
 	return request({
-		head: [{key: "rtype", val: "del"}],
+		head: [
+			{key: "rtype", val: "del"},
+			{key: "tok", val: tok},
+			{key: "user", val: "public"}
+		],
 		type: "GET",
 		path: queryString
 	});
 }
 
 
-function post(queryString, body)
+function post(queryString, body, token, user)
 {
 	"use strict";
+	var tok, u;
+	tok = token || "";
+	u = user || "public"; 
 	return request({
-		head: [{key: "rtype", val: "post"}],
+		head: [
+			{key: "rtype", val: "post"},
+			{key: "tok", val: tok},
+			{key: "user", val: "public"}
+		],
 		type: "POST",
 		path: queryString,
 		body: body
 	});
 }
 
-function put(src, queryString, body)
+function put(queryString, body, token, user)
 {
 	"use strict";
+	var tok, u;
+	tok = token || "";
+	u = user || "public"; 
 	return request({
-		head: [{key: "rtype", val: "put"}],
+		head: [
+			{key: "rtype", val: "put"},
+			{key: "tok", val: tok},
+			{key: "user", val: "public"}
+		],
 		type: "POST",
 		path: queryString,
 		body: body

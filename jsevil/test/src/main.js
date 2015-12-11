@@ -7,6 +7,7 @@ var __test_show_result = __test_show_result || false;
 var __test_count_success = __test_count_success || 0;
 var __test_count_total = __test_count_total || 0;
 var testprint = "";
+var test_show_hardcore = test_show_hardcore || false;
 
 function __test(cond, condstr, line, file)
 {

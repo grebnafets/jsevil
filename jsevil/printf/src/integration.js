@@ -5,6 +5,25 @@ test.push(
 	function ()
 	{
 		"use strict";
+		var obj = {foo: "foo", bar: "bar"};
+		var nil = null;
+		printf("%s %s %s", nil, nil);
+	}
+);
+	
+	test.push(
+	function ()
+	{
+		"use strict";
+		var obj = {foo: "foo", bar: "bar"};
+		printf("%s", obj);		
+	}
+);
+
+test.push(
+	function ()
+	{
+		"use strict";
 		printf(
 			"%cyellow%cred%cgreen%cblue%cblack%cwhite%cpurple",
 			"color:yellow",

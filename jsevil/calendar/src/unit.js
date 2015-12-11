@@ -1,7 +1,7 @@
-/* global test, testprint:true, test_show_result */
+/* global test, testprint:true, test_show_result, test_show_hardcore */
 /* global sprintf, calendar_isLeapYear, calendar_getYearDaysCount */
 /* global calendar_abstractWeekDayNumber, calendar_buildMonthTable  */
-/* global calendar_state */
+/* global calendar_state, calendar_weekDayNumberToString */
 
 /* Leap Years 1800 - 2400 */
 var leapYears1800_2400 = [1804, 1808, 1812, 1816, 1820, 1824, 1828, 1832, 1836, 1840, 1844, 1848, 1852, 1856, 1860, 1864, 1868, 1872, 1876, 1880, 1884, 1888, 1892, 1896, 1904, 1908, 1912, 1916, 1920, 1924, 1928, 1932, 1936, 1940, 1944, 1948, 1952, 1956, 1960, 1964, 1968, 1972, 1976, 1980, 1984, 1988, 1992, 1996, 2000, 2004, 2008, 2012, 2016, 2020, 2024, 2028, 2032, 2036, 2040, 2044, 2048, 2052, 2056, 2060, 2064, 2068, 2072, 2076, 2080, 2084, 2088, 2092, 2096, 2104, 2108, 2112, 2116, 2120, 2124, 2128, 2132, 2136, 2140, 2144, 2148, 2152, 2156, 2160, 2164, 2168, 2172, 2176, 2180, 2184, 2188, 2192, 2196, 2204, 2208, 2212, 2216, 2220, 2224, 2228, 2232, 2236, 2240, 2244, 2248, 2252, 2256, 2260, 2264, 2268, 2272, 2276, 2280, 2284, 2288, 2292, 2296, 2304, 2308, 2312, 2316, 2320, 2324, 2328, 2332, 2336, 2340, 2344, 2348, 2352, 2356, 2360, 2364, 2368, 2372, 2376, 2380, 2384, 2388, 2392, 2396, 2400];
@@ -37,6 +37,27 @@ function test__calendar_isLeapYear()
 	test(!calendar_isLeapYear(300));
 	testprint = sprintf("year:%d", 400);
 	test(calendar_isLeapYear(400));
+}
+
+function test__calendar_weekDayNumberToString()
+{
+	"use strict";
+	var conf = {};
+	test(calendar_weekDayNumberToString(0, conf) === "Sunday");
+	test(calendar_weekDayNumberToString(1, conf) === "Monday");
+	test(calendar_weekDayNumberToString(2, conf) === "Tuesday");
+	test(calendar_weekDayNumberToString(3, conf) === "Wendesday");
+	test(calendar_weekDayNumberToString(4, conf) === "Thursday");
+	test(calendar_weekDayNumberToString(5, conf) === "Friday");
+	test(calendar_weekDayNumberToString(6, conf) === "Saturday");
+	conf.alias = true;
+	test(calendar_weekDayNumberToString(0, conf) === "Sun");
+	test(calendar_weekDayNumberToString(1, conf) === "Mon");
+	test(calendar_weekDayNumberToString(2, conf) === "Tue");
+	test(calendar_weekDayNumberToString(3, conf) === "Wen");
+	test(calendar_weekDayNumberToString(4, conf) === "Thu");
+	test(calendar_weekDayNumberToString(5, conf) === "Fri");
+	test(calendar_weekDayNumberToString(6, conf) === "Sat");
 }
 
 function test__calendar_getDaysYearCount()
@@ -103,7 +124,6 @@ function test__calendar_semiTest_abstractWeekDaysNumber()
 	test(state.states[state.state].fmt === "There is no year 0.");
 }
 
-/* TODO: Make the tests faster by simply taking a random sample. */
 function test__calendar_superTest_abstractWeekDaysNumberCE()
 {
 	"use strict";
@@ -175,7 +195,11 @@ function test__calendar_superTest_abstractWeekDaysNumberBCE()
 test__calendar_isLeapYear();
 test__calendar_getDaysYearCount();
 test__calendar_semiTest_abstractWeekDaysNumber();
-test__calendar_superTest_abstractWeekDaysNumberCE();
-test__calendar_superTest_abstractWeekDaysNumberBCE();
+test__calendar_weekDayNumberToString();
+
+if (test_show_hardcore) {
+	test__calendar_superTest_abstractWeekDaysNumberCE();
+	test__calendar_superTest_abstractWeekDaysNumberBCE();
+}
 
 test_show_result();
