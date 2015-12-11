@@ -1,4 +1,4 @@
-/* global calendar_buildDisplayMonth, calendar_state, printf */
+/* global calendar_buildDisplayMonth, calendar_state, printf, sprintf */
 /* global calendar_weekDayNumberToString */
 
 var okt2014 = calendar_buildDisplayMonth(calendar_state, 9, 2014);
@@ -22,26 +22,26 @@ var jan2016 = calendar_buildDisplayMonth(calendar_state, 0, 2016);
 var feb2016 = calendar_buildDisplayMonth(calendar_state, 1, 2016);
 var mar2016 = calendar_buildDisplayMonth(calendar_state, 2, 2016);
 
-printf("%s", okt2014);
-printf("%s", nov2014);
-printf("%s", des2014);
+printf("%s", sprintf(okt2014.fmt, okt2014.arg));
+printf("%s", sprintf(nov2014.fmt, nov2014.arg));
+printf("%s", sprintf(des2014.fmt, des2014.arg));
 
-printf("%s", jan2015);
-printf("%s", feb2015);
-printf("%s", mar2015);
-printf("%s", apr2015);
-printf("%s", mai2015);
-printf("%s", jun2015);
-printf("%s", jul2015);
-printf("%s", aug2015);
-printf("%s", sep2015);
-printf("%s", okt2015);
-printf("%s", nov2015);
-printf("%s", des2015);
+printf("%s", sprintf(jan2015.fmt, jan2015.arg));
+printf("%s", sprintf(feb2015.fmt, feb2015.arg));
+printf("%s", sprintf(mar2015.fmt, mar2015.arg));
+printf("%s", sprintf(apr2015.fmt, apr2015.arg));
+printf("%s", sprintf(mai2015.fmt, mai2015.arg));
+printf("%s", sprintf(jun2015.fmt, jun2015.arg));
+printf("%s", sprintf(jul2015.fmt, jul2015.arg));
+printf("%s", sprintf(aug2015.fmt, aug2015.arg));
+printf("%s", sprintf(sep2015.fmt, sep2015.arg));
+printf("%s", sprintf(okt2015.fmt, okt2015.arg));
+printf("%s", sprintf(nov2015.fmt, nov2015.arg));
+printf("%s", sprintf(des2015.fmt, des2015.arg));
 
-printf("%s", jan2016);
-printf("%s", feb2016);
-printf("%s", mar2016);
+printf("%s", sprintf(jan2016.fmt, jan2016.arg));
+printf("%s", sprintf(feb2016.fmt, feb2016.arg));
+printf("%s", sprintf(mar2016.fmt, mar2016.arg));
 
 var custom = {
 	head: {
@@ -120,4 +120,4 @@ var customDes2015 = calendar_buildDisplayMonth(
 	calendar_state, 11, 2015, custom
 );
 
-printf("%s", customDes2015);
+printf("%s", sprintf(customDes2015.fmt, customDes2015.arg));

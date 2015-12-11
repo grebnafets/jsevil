@@ -304,7 +304,6 @@ function calendar_buildDisplayMonth(state, m, y, customize)
 	display = {
 		fmt: "",
 		arg: [],
-		str: "",
 		d: 1,
 		m: m,
 		y: y
@@ -347,8 +346,7 @@ function calendar_buildDisplayMonth(state, m, y, customize)
 			display.fmt += "\n";
 		}
 	}
-	display.str = sprintf(display.fmt, display.arg);
-	return display.str;
+	return display;
 }
 
 /* Days in English is fallback behavior. */
