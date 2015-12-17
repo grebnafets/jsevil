@@ -18,57 +18,57 @@ const (
 )
 
 func main() {
-	state := &stateno{};
+	state := &Stateno{};
 	state.Init();
 	ajax(state);
 }
 
-/* Yeah... I am obsessed with this stateno... {{{ */
-type stateno struct {
-	bad bool; /* You always want to know bad */
-	shh bool; /* You might want to see !bad */
-	str string;
-	err error;
-	interrupt bool;
+/* Yeah... I am obsessed with this Stateno... {{{ */
+type Stateno struct {
+	Bad bool; /* You always want to know Bad */
+	ShowAll bool; /* You might want to see !Bad */
+	Str string;
+	Err error;
+	Interrupt bool;
 };
 
-func (s *stateno) Init() {
-	s.bad = false;
-	s.shh = true;
-	s.str = "";
-	s.interrupt = false;
+func (s *Stateno) Init() {
+	s.Bad = false;
+	s.ShowAll = true;
+	s.Str = "";
+	s.Interrupt = false;
 }
 
-func (s *stateno) Set(state string, bad bool) {
-	s.bad = bad;
-	s.str = state;
+func (s *Stateno) Set(state string, Bad bool) {
+	s.Bad = Bad;
+	s.Str = state;
 }
 
-func (s *stateno) ErrCheck() {
-	if (s.err != nil) {
-		s.bad = true;
-		s.str = s.err.Error();
+func (s *Stateno) ErrCheck() {
+	if (s.Err != nil) {
+		s.Bad = true;
+		s.Str = s.Err.Error();
 	}
 }
 
-func postValidate(state *stateno) {
-	if (state.bad) {
+func postValidate(state *Stateno) {
+	if (state.Bad) {
 		_, file, line, _ := runtime.Caller(2);
 		pc, _, _, _ := runtime.Caller(1);
 		f := runtime.FuncForPC(pc)
-		fmt.Printf("@%d:%s:%s:%s\n", line, f.Name(), file, state.str);
-	} else if (!state.bad && !state.shh) {
-		fmt.Printf("%s\n", state.str);
+		fmt.Printf("@%d:%s:%s:%s\n", line, f.Name(), file, state.Str);
+	} else if (!state.Bad && !state.ShowAll) {
+		fmt.Printf("%s\n", state.Str);
 	}
 }
 /* }}} */
 
-func ajax(state *stateno) {
+func ajax(state *Stateno) {
 	defer postValidate(state);
-	exitSignal := func(state *stateno) {
+	exitSignal := func(state *Stateno) {
 		go func() {
 			for {
-				if (state.interrupt) {
+				if (state.Interrupt) {
 					os.Exit(EXIT_SUCCESS);
 				}
 				runtime.Gosched();
@@ -88,7 +88,7 @@ func ajax(state *stateno) {
 		if (clen != "") {
 			defer r.Body.Close();
 			var body []byte;
-			body, state.err = ioutil.ReadAll(r.Body);
+			body, state.Err = ioutil.ReadAll(r.Body);
 			state.ErrCheck();
 			contents = string(body);
 		} else {
@@ -97,9 +97,9 @@ func ajax(state *stateno) {
 		return contents;
 	};
 
-	sendResponce := func(w http.ResponseWriter, str string) {
+	sendResponce := func(w http.ResponseWriter, Str string) {
 		w.Header().Set("Access-Control-Allow-Origin", "*");
-		fmt.Fprintf(w, "%s", str);
+		fmt.Fprintf(w, "%s", Str);
 	};
 
 	ajaxTest := func(w http.ResponseWriter, r *http.Request) {
@@ -133,7 +133,7 @@ func ajax(state *stateno) {
 	exitHandler := func (w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*");
 		fmt.Fprintf(w, "Shutting down");
-		state.interrupt = true;
+		state.Interrupt = true;
 	};
 	http.HandleFunc("/", mainHandler);
 	http.HandleFunc("/exit", exitHandler);
