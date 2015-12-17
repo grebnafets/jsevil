@@ -10,6 +10,7 @@ import (
 	"net/http";
 	"os";
 	"io/ioutil";
+	"time";
 );
 
 const (
@@ -69,6 +70,7 @@ func ajax(state *Stateno) {
 		go func() {
 			for {
 				if (state.Interrupt) {
+					time.Sleep(time.Second);
 					os.Exit(EXIT_SUCCESS);
 				}
 				runtime.Gosched();
@@ -98,7 +100,6 @@ func ajax(state *Stateno) {
 	};
 
 	sendResponce := func(w http.ResponseWriter, Str string) {
-		w.Header().Set("Access-Control-Allow-Origin", "*");
 		fmt.Fprintf(w, "%s", Str);
 	};
 
@@ -118,6 +119,8 @@ func ajax(state *Stateno) {
 	};
 
 	mainHandler := func (w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*");
+		w.Header().Set("Access-Control-Allow-Headers", "rtype, tok, user");
 		token := r.Header.Get("tok");
 		user := r.Header.Get("user");
 		switch (token) {
@@ -132,6 +135,7 @@ func ajax(state *Stateno) {
 
 	exitHandler := func (w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*");
+		w.Header().Set("Access-Control-Allow-Headers", "rtype, tok, user");
 		fmt.Fprintf(w, "Shutting down");
 		state.Interrupt = true;
 	};

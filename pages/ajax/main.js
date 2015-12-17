@@ -134,7 +134,7 @@ function sprintf(fmt)
  k = 1;
  offset = 0;
  style = 0;
- if (typeof arguments[1] === "object") {
+ if (Array.isArray(arguments[1])) {
   args = arguments[1];
   k = 0;
  } else {
@@ -246,6 +246,7 @@ var __test_show_result = __test_show_result || false;
 var __test_count_success = __test_count_success || 0;
 var __test_count_total = __test_count_total || 0;
 var testprint = "";
+var test_show_hardcore = test_show_hardcore || false;
 function __test(cond, condstr, line, file)
 {
  "use strict";
@@ -304,49 +305,105 @@ __test_show_failure = true;__test_show_success = true;__test_show_result = true;
 if (XMLHttpRequest === undefined) {
  var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 }
-function get(src, command)
+function request(obj)
 {
  "use strict";
- var http, req, data;
+ var http, type, path, data, body, sync, head, cack;
  http = new XMLHttpRequest();
+ type = obj.type || "POST";
+ path = obj.path || "";
+ body = obj.body || null;
+ head = obj.head || [];
+ sync = obj.sync || true;
+ cack = obj.cack || null;
  data = null;
- req = src;
  http.onreadystatechange = function() {
   if (1
    && http.readyState === 4
    && http.status === 200
   ) {
    data = http.responseText;
+   if (cack !== null) {
+    data = cack(data);
+   }
   }
  };
- if (command !== undefined) {
-  req += "?" + command;
- }
- http.open("GET", req, false);
- http.send();
- return data;
-}
-function post(src, command, body)
-{
- "use strict";
- var http, req, data;
- http = new XMLHttpRequest();
- data = null;
- req = src;
- http.onreadystatechange = function() {
-  if (1
-   && http.readyState === 4
-   && http.status === 200
-  ) {
-   data = http.responseText;
+ http.open(type, path, !sync);
+ (function (){
+  var i, len;
+  len = head.length;
+  for (i = 0; i < len; i += 1) {
+   http.setRequestHeader(head[i].key, head[i].val);
   }
- };
- if (command !== undefined) {
-  req += "?" + command;
- }
- http.open("POST", req, false);
+ }());
  http.send(body);
  return data;
+}
+function get(queryString, token, user)
+{
+ "use strict";
+ var tok, u;
+ tok = token || "";
+ u = user || "public";
+ return request({
+  head: [
+   {key: "rtype", val: "get"},
+   {key: "tok", val: tok},
+   {key: "user", val: "public"}
+  ],
+  type: "GET",
+  path: queryString,
+ });
+}
+function del(queryString, token, user)
+{
+ "use strict";
+ var tok, u;
+ tok = token || "";
+ u = user || "public";
+ return request({
+  head: [
+   {key: "rtype", val: "del"},
+   {key: "tok", val: tok},
+   {key: "user", val: "public"}
+  ],
+  type: "GET",
+  path: queryString
+ });
+}
+function post(queryString, body, token, user)
+{
+ "use strict";
+ var tok, u;
+ tok = token || "";
+ u = user || "public";
+ return request({
+  head: [
+   {key: "rtype", val: "post"},
+   {key: "tok", val: tok},
+   {key: "user", val: "public"}
+  ],
+  type: "POST",
+  path: queryString,
+  body: body
+ });
+}
+function put(queryString, body, token, user)
+{
+ "use strict";
+ var tok, u;
+ tok = token || "";
+ u = user || "public";
+ return request({
+  head: [
+   {key: "rtype", val: "put"},
+   {key: "tok", val: tok},
+   {key: "user", val: "public"}
+  ],
+  type: "POST",
+  path: queryString,
+  body: body
+ });
 }
 function asyncModule(func)
 {
@@ -359,41 +416,47 @@ function asyncModule(func)
  }, t);
 }
 if (false) {
+ del();
  get();
  post();
+ put();
  asyncModule();
 }
 var data;
-data = get("http://localhost:8080");
-__test(data === "What?", "data === \"What?\"", 4, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
-data = get("http://localhost:8080", "data=macro");
-__test(data === "polo", "data === \"polo\"", 6, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
-data = post("http://localhost:8080");
-__test(data === "What?", "data === \"What?\"", 9, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
-data = post("http://localhost:8080", "data=macro", "foobar");
-__test(data === "polofoobar", "data === \"polofoobar\"", 11, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
+data = get("http://localhost:8080", "test");
+__test(data === "What?get", "data === \"What?get\"", 4, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
+data = del("http://localhost:8080", "test");
+__test(data === "What?del", "data === \"What?del\"", 6, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
+data = put("http://localhost:8080", "", "test");
+__test(data === "What?put", "data === \"What?put\"", 8, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
+data = get("http://localhost:8080?test=macro", "test");
+__test(data === "pologet", "data === \"pologet\"", 10, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
+data = post("http://localhost:8080", "", "test");
+__test(data === "What?post", "data === \"What?post\"", 12, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
+data = post("http://localhost:8080?foo=bar&test=macro", "foobar", "test");
+__test(data === "polopostfoobar", "data === \"polopostfoobar\"", 14, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
 function myAsyncModule1(foo)
 {
  "use strict";
  var data, old;
- data = post("http://localhost:8080", "data=macro", foo);
- __test(data === "polo" + foo, "data === \"polo\" + foo", 18, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
+ data = post("http://localhost:8080?test=macro", foo, "test");
+ __test(data === "polopost" + foo, "data === \"polopost\" + foo", 21, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
  old = data;
- data = get("http://localhost:8080");
- __test(data + old === "What?" + old, "data + old === \"What?\" + old", 21, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
+ data = get("http://localhost:8080", "test");
+ __test(data + old === "What?get" + old, "data + old === \"What?get\" + old", 24, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
 }
 myAsyncModule1.timeout = 10;
 function myAsyncModule2(bar)
 {
  "use strict";
- data = post("http://localhost:8080", "data=macro", bar);
- __test(data === "polo" + bar, "data === \"polo\" + bar", 29, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
+ data = post("http://localhost:8080?test=macro", bar, "test");
+ __test(data === "polopost" + bar, "data === \"polopost\" + bar", 32, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
 }
 asyncModule(myAsyncModule1, "foo");
 asyncModule(myAsyncModule2, "bar");
 setTimeout(function () {
  "use strict";
  var data = get("http://localhost:8080/exit");
- __test(data === "Shutting down", "data === \"Shutting down\"", 38, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
+ __test(data === "Shutting down", "data === \"Shutting down\"", 41, "/home/mme/ws/js/jsevil/jsevil/ajax/src/unit.js");
  test_show_result();
 }, 50);
