@@ -9,7 +9,7 @@
 function request(obj)
 {
 	"use strict";
-	var http, type, path, data, body, sync, head, cack;
+	var http, type, path, data, body, sync, head, cack, timo;
 	http = new XMLHttpRequest();
 	type = obj.type || "POST";
 	path = obj.path || "";
@@ -17,7 +17,9 @@ function request(obj)
 	head = obj.head || [];
 	sync = obj.sync || true;
 	cack = obj.cack || null;
+	timo = obj.timo || 1000;
 	data = null;
+	http.timeout = timo;
 	http.onreadystatechange = function() {
 		if (1
 			&& http.readyState === STATE_OK
@@ -29,6 +31,9 @@ function request(obj)
 			}
 		}
 
+	};
+	http.ontimeout = function() {
+		data = null;
 	};
 	http.open(type, path, !sync);
 	(function (){
@@ -111,6 +116,41 @@ function put(queryString, body, token, user)
 		path: queryString,
 		body: body
 	});
+}
+
+function NewAsyncSchedular()
+{
+	"use strict";
+	var s = {
+		pos: 0,
+		callQueue: [],
+		interval: 250,
+		finish: false
+	}
+	return s;
+}
+
+function asyncSchedularReset(s)
+{
+	"use strict";
+	s.pos       = 0;
+	s.callQueue = [];
+	s.interval  = 250;
+}
+
+function asyncSchedular(s)
+{
+	"use strict";
+	setTimeout(function() {
+		if (s.pos < s.callQueue.length) {
+			s = s.callQueue[s.pos++](s);
+		} else {
+			asyncSchedularReset(s);
+		}
+		if (!s.finish) {
+			asyncSchedular(s);
+		}
+	}, s.interval);
 }
 
 function asyncModule(func)

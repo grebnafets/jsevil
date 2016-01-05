@@ -35,9 +35,61 @@ function myAsyncModule2(bar)
 asyncModule(myAsyncModule1, "foo");
 asyncModule(myAsyncModule2, "bar");
 
+var s = NewAsyncSchedular();
+s.mydata = [null, null];
+s.maxtries = 0;
+
+function finishit(s)
+{
+	"use strict";
+	var data = get("http://localhost:8080/exit");
+	test(data === "Shutting down");
+	test_show_result();
+	s.finish = true;
+	return s;
+}
+
+function handleit(s)
+{
+	"use strict";
+	test(s.mydata[0] === "What?get");
+	test(s.mydata[1] === "What?get");
+	s.callQueue.push(finishit);
+	return s;
+}
+
+function getit(s)
+{
+	"use strict";
+	s.maxtries += 1;
+	if (s.mydata[0] === null) {
+		s.mydata[0] = get("http://localhost:8080", "test");
+	}
+	if (s.mydata[1] === null) {
+		s.mydata[1] = get("http://localhost:8080", "test");
+	}
+	if (s.mydata[0] === null || s.mydata[1] === null) {
+		if (s.maxtries < 2) {
+			s.callQueue.push(getit);
+		} else {
+			test_show_result();
+			s.finish = true;
+		}
+	} else {
+		s.callQueue.push(handleit);
+	}
+	return s;
+}
+
+s.callQueue.push(getit);
+
+asyncSchedular(s);
+
+/*
 setTimeout(function () {
 	"use strict";
 	var data = get("http://localhost:8080/exit");
 	test(data === "Shutting down");
 	test_show_result();
-}, 50);
+}, 200);
+*/
