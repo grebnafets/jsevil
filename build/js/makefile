@@ -17,4 +17,4 @@ clean:
 	@rm -f tmp/*.sed
 
 test: $(list) clean
-	@js bin/unit.js
+	@node bin/unit.js
