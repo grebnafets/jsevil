@@ -53,7 +53,7 @@ function get(queryString, token, user)
 	"use strict";
 	var tok, u;
 	tok = token || "";
-	u   = user || "public"; 
+	u   = user || "public";
 	return request({
 		head: [
 			{key: "rtype", val: "get"},
@@ -70,7 +70,7 @@ function del(queryString, token, user)
 	"use strict";
 	var tok, u;
 	tok = token || "";
-	u = user || "public"; 
+	u = user || "public";
 	return request({
 		head: [
 			{key: "rtype", val: "del"},
@@ -88,7 +88,7 @@ function post(queryString, body, token, user)
 	"use strict";
 	var tok, u;
 	tok = token || "";
-	u = user || "public"; 
+	u = user || "public";
 	return request({
 		head: [
 			{key: "rtype", val: "post"},
@@ -106,7 +106,7 @@ function put(queryString, body, token, user)
 	"use strict";
 	var tok, u;
 	tok = token || "";
-	u = user || "public"; 
+	u = user || "public";
 	return request({
 		head: [
 			{key: "rtype", val: "put"},
