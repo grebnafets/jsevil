@@ -1,0 +1,8 @@
+{
+	"undef": true,
+	"bitwise": false,
+	"laxbreak": true,
+	"unused": true,
+	"strict": true,
+	"predef": ["setTimeout", "XMLHttpRequest"]
+}
