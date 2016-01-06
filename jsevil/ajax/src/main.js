@@ -1,5 +1,6 @@
-/* jshint laxbreak:true */
-/* global XMLHttpRequest:true, STATE_OK, STATUS_OK */
+/* global STATE_OK, STATUS_OK */
+/* exported del, get, post, put, asyncModule, NewAsyncSchedular */
+/* exported asyncSchedular */
 
 /*
  * Default behavior is sending request in sync. Otherwise the function is
@@ -126,7 +127,7 @@ function NewAsyncSchedular()
 		callQueue: [],
 		interval: 250,
 		finish: false
-	}
+	};
 	return s;
 }
 
@@ -164,10 +165,3 @@ function asyncModule(func)
 	}, t);
 }
 
-if (false) {
-	del();
-	get();
-	post();
-	put();
-	asyncModule();
-}

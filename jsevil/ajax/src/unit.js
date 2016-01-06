@@ -1,4 +1,6 @@
+/* STATE_OK, STATUS_OK */
 /* global get, post, del, put, asyncModule, test, test_show_result */
+/* global NewAsyncSchedular, asyncSchedular */
 var data;
 data = get("http://localhost:8080", "test");
 test(data === "What?get");
@@ -85,11 +87,3 @@ s.callQueue.push(getit);
 
 asyncSchedular(s);
 
-/*
-setTimeout(function () {
-	"use strict";
-	var data = get("http://localhost:8080/exit");
-	test(data === "Shutting down");
-	test_show_result();
-}, 200);
-*/
