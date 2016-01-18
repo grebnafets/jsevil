@@ -1,15 +1,12 @@
-/* global Stateno, stateno_create, stateno_set */
-/* global sprintf */
+/* exported calendar_isLeapYear, calendar_getYearDaysCount, calendar_abstractWeekDayNumber */
+/* exported calendar_weekDayNumberToString, calendar_abstractWeekDayNumberCE, calendar_abstractWeekDayNumberBCE, calendar_buildDisplayMonth */
+/* exported calendar_createDisplayObj, calendar_buildDisplayHead, calendar_parseTemplate */
+/* exported calendar_countTokens, calendar_setup */
 /* jshint laxbreak:true */
 
-/* 
- * Clone this object if you want calendar state to be local in your API.
- * */
-var calendar_state = new Stateno(null);
-var CALENDAR_YEAR_ZERO = stateno_create(
-	calendar_state, "There is no year 0.", true
-);
+/* Author: github.com/grebnafets (Please do not remove this line.) */
 
+/* Algorithms {{{ */
 function calendar_isLeapYear(year)
 {
 	"use strict";
@@ -168,149 +165,177 @@ function calendar_abstractWeekDayNumberCE(d, m, Y)
  * To get B.C.E, then insert Y as negative.
  * To get C.E, then insert Y as positive.
  * */
-function calendar_abstractWeekDayNumber(state, d, m, Y)
+function calendar_abstractWeekDayNumber(d, m, Y)
 {
 	"use strict";
-	var w;
+	var w, dt;
+	dt = calendar_buildMonthTable(Y);
 	w = -1;
 	if (Y === 0) {
-		stateno_set(state, CALENDAR_YEAR_ZERO);
-	} else {
-		if (Y > 0) {
-			w = calendar_abstractWeekDayNumberCE(d, m, Y);
-		} else  {
-			Y *= -1;
-			w = calendar_abstractWeekDayNumberBCE(d, m, Y);
-		}
+		throw "Year cannot be zero";
+	}
+	if (m < 0 || m > 11) {
+		throw "Invalid month";
+	}
+	if (d < 1 || d > dt[m]) {
+		throw "invalid day";
+	}
+	if (Y > 0) {
+		w = calendar_abstractWeekDayNumberCE(d, m, Y);
+	} else  {
+		Y *= -1;
+		w = calendar_abstractWeekDayNumberBCE(d, m, Y);
 	}
 	return w;
 }
+/* }}} */
 
-function calendar_display(display, terminal, dom)
+/* TODO: Make API when finished. */
+
+/*
+	Everything below has yet tested with unit tests, they are simply
+	tested with integration.
+*/
+
+/*
+	By defualt, it assumes you are using terminal/console.
+	Reason?
+		1. Fast integration testing.
+		2. It is self documenting.
+
+	The structure might look complicated but the design is actually
+	very simple.
+
+	To use, then simply copy everything here to its own webworker.
+	Write your code at the bottom and build your display. Don't worry
+	about closures because there is no special need for closures when you
+	are within a webworker.
+	Template and tokens are sent to the webworker along with dates you
+	want rendererd.
+	Display for the calendar is created and then sent back. You can then
+	finalize it for edge cases on the main thread if you need.
+*/
+
+/* Display {{{ */
+
+/* Display object. */
+function calendar_createDisplayObj(m, y)
 {
 	"use strict";
-	var res = null;
-	if (typeof document === "undefined") {
-		if (terminal !== undefined || terminal !== null) {
-			res = terminal(display);
-		}
-	} else {
-		if (dom !== undefined || dom !== null) {
-			res = dom(display);
-		}
-	}
-	return res;
-}
-
-function calendar_buildDisplayMonthHead(state, display, m, y, customize)
-{
-	"use strict";
-	var r;
-	calendar_display(
-		display,
-		function (display) {
-			if (customize.head === undefined) {
-				display.fmt += "%c";
-				display.arg.push(
-					"color:green;font-weight:bold"
-				);
-				display.fmt += "%d %d\n";
-				display.arg.push(display.y);
-				display.arg.push(display.m + 1);
-				for (r = 0; r < 7; r += 1) {
-					display.fmt += "%s\t";
-					display.arg.push(
-						calendar_weekDayNumberToString(
-							r, {alias:true}
-						)
-					);
-				}
-				display.fmt += "\n";
-			} else {
-				customize.head.terminal(display);
-			}
-		},
-		null
-	);
-
-}
-
-function calendar_buildDisplayMonthPreDays(state, display, customize)
-{
-	"use strict";
-	calendar_display(
-		display,
-		function (display) {
-			if (customize.pre === undefined) {
-				display.fmt += "%c%d\t";
-				display.arg.push("color:yellow");
-				display.arg.push(display.d);
-			} else {
-				customize.pre.terminal(display);
-			}
-		},
-		null
-	);
-
-}
-
-function calendar_buildDisplayMonthDays(state, display, customize)
-{
-	"use strict";
-	calendar_display(
-		display,
-		function (display) {
-			if (customize.days === undefined) {
-				display.fmt += "%c%d\t";
-				display.arg.push("color:blue");
-				display.arg.push(display.d);
-			} else {
-				customize.days.terminal(display);
-			}
-		},
-		null
-	);
-}
-
-function calendar_buildDisplayMonthPostDays(state, display, customize)
-{
-	"use strict";
-	calendar_display(
-		display,
-		function (display) {
-			if (customize.post === undefined) {
-				display.fmt += "%c%d\t";
-				display.arg.push("color:yellow");
-				display.arg.push(display.d);
-			} else {
-				customize.post.terminal(display);
-			}
-		},
-		null
-	);
-
-}
-
-function calendar_buildDisplayMonth(state, m, y, customize)
-{
-	"use strict";
-	var r, c, o, d, M, firstWeekDay, numberOfDays, display;
-	customize = customize || {};
-	M = calendar_buildMonthTable(y);
-	firstWeekDay = calendar_abstractWeekDayNumber(state, 1, m, y);
-	numberOfDays = M[m];
-	r = c = 0;
-	d = 1;
-	display = {
+	return {
 		fmt: "",
 		arg: [],
 		d: 1,
 		m: m,
 		y: y
 	};
+}
+
+/* Defaults are also examples of what you can do. */
+function calendar_buildDisplayHead(display, customize)
+{
+	"use strict";
+	var r, m, y;
+	m = display.m;
+	y = display.y;
+	if (customize.head === undefined) {
+		// Default.
+		display.fmt += "%c";
+		display.arg.push(
+			"color:green;font-weight:bold"
+		);
+		display.fmt += "%d %d\n";
+		display.arg.push(y);
+		display.arg.push(m + 1);
+		for (r = 0; r < 7; r += 1) {
+			display.fmt += "%s\t";
+			display.arg.push(
+				calendar_weekDayNumberToString(
+					r, {alias:true}
+				)
+			);
+		}
+		display.fmt += "\n";
+	} else {
+		customize.head(display);
+	}
+	return display;
+}
+
+/* func(disp, method) -> func(disp, defaultMethod/obj->customMethod) */
+function calendar_display(display, method)
+{
+	"use strict";
+	return method(display);
+}
+
+function calendar_buildDisplayMonthPreDays(display, customize)
+{
+	"use strict";
+	calendar_display(
+		display,
+		function (display) {
+			if (customize.pre === undefined) {
+				/* Default config. */
+				display.fmt += "%c%d\t";
+				display.arg.push("color:yellow");
+				display.arg.push(display.d);
+			} else {
+				customize.pre(display);
+			}
+		} 
+	);
+}
+
+function calendar_buildDisplayMonthDays(display, customize)
+{
+	"use strict";
+	calendar_display(
+		display,
+		function (display) {
+			if (customize.days === undefined) {
+				/* Default config. */
+				display.fmt += "%c%d\t";
+				display.arg.push("color:blue");
+				display.arg.push(display.d);
+			} else {
+				customize.days(display);
+			}
+		}
+	);
+}
+
+function calendar_buildDisplayMonthPostDays(display, customize)
+{
+	"use strict";
+	calendar_display(
+		display,
+		function (display) {
+			if (customize.post === undefined) {
+				/* Default config. */
+				display.fmt += "%c%d\t";
+				display.arg.push("color:yellow");
+				display.arg.push(display.d);
+			} else {
+				customize.post(display);
+			}
+		}
+	);
+}
+
+function calendar_buildDisplayMonth(display, customize)
+{
+	"use strict";
+	var r, c, o, d, m, y, M, firstWeekDay, numberOfDays;
+	r = c = 0;
+	d = 1;
+	m = display.m;
+	y = display.y;
+	M = calendar_buildMonthTable(y);
+	numberOfDays = M[m];
+	customize = customize || {};
+	firstWeekDay = calendar_abstractWeekDayNumber(1, m, y);
 	o = M[m - 1 > -1 ? m - 1 : 11];
-	/* header */
-	calendar_buildDisplayMonthHead(state, display, m, y, customize);
 	for (c = 0; c < 6; c += 1) {
 		for (r = 0; r < 7; r += 1) {
 			if (firstWeekDay === r) {
@@ -325,19 +350,19 @@ function calendar_buildDisplayMonth(state, m, y, customize)
 				o++;
 				display.d = (o - firstWeekDay);
 				calendar_buildDisplayMonthPreDays(
-					state, display, customize
+					display, customize
 				);
 				/* Before*/
 			} else if (numberOfDays > 0) {
 				display.d = d;
 				calendar_buildDisplayMonthDays(
-					state, display, customize
+					display, customize
 				);
 				d++;
 			} else {
 				display.d = d;
 				calendar_buildDisplayMonthPostDays(
-					state, display, customize
+					display, customize
 				);
 				d++;
 			}
@@ -349,11 +374,84 @@ function calendar_buildDisplayMonth(state, m, y, customize)
 	return display;
 }
 
-/* Days in English is fallback behavior. */
+function calendar_parseTemplate(templ, token, force)
+{
+	"use strict";
+	var i, parsed, msg;
+	if (!Array.isArray(token)) {
+		throw "token is not array.";
+	}
+	if (typeof templ !== 'string' && !(templ instanceof String)) {
+		throw "templ is supposed to be a string.";
+	}
+	if (!force && templ === "") {
+		 msg = [
+			"You are attempting to parse an empty string.\n",
+			"Use calendar_parseTemplate(templ, token, *true*) ",
+			"or calendar_setup(templ, tokens, *true*) ",
+			"to shut down this error and to let the function ",
+			"return empty string instead."
+		];
+		throw msg.join("");
+	}
+	parsed = templ;
+	if (parsed !== "") {
+		for (i = 0; i < token.length; i += 1) {
+			parsed = parsed.replace(token[i].key, token[i].val);
+		}
+	}
+	return parsed;
+}
+
+function calendar_countTokens(template, token)
+{
+	"use strict";
+	return template.split(token).length - 1;
+}
+
+/* TODO: Add more features such as buttons. */
+
+/* Here I give meaning to %y, %m and %d. */
+function calendar_setup(obj)
+{
+	"use strict";
+	if (!(obj instanceof Object)) {
+		throw "Invalid argument.";
+	}
+	var f = obj.force || false;
+	var config = {
+		head: function(display) {
+			var templ, cm, cy;
+			templ = calendar_parseTemplate(
+				obj.head.templ, obj.head.tokens, f
+			);
+			cm = calendar_countTokens(templ, "%m");
+			cy = calendar_countTokens(templ, "%y");
+			if (cm > 0) {
+				templ = templ.replace(/%m/g, display.m + 1);
+			}
+			if (cy > 0) {
+				templ = templ.replace(/%y/g, display.y);
+			}
+			display.fmt += templ;
+		},
+		/* Calendar body. */
+		/* TODO: Implement the rest. */
+		pre: {},
+		post: {},
+		days: {}
+		/* TODO: buttons */
+	};
+	return config;
+}
+/* }}} */
+
+/* Remove this? */
 function calendar_weekDayNumberToString(w, conf)
 {
 	"use strict";
 	var day, days, lang, src, alias;
+	/* Default days. */
 	days = [
 		"Sunday",
 		"Monday",
@@ -366,7 +464,7 @@ function calendar_weekDayNumberToString(w, conf)
 	lang  = conf !== undefined ? conf.lang  : "en";
 	src   = conf !== undefined ? conf.src   : "";
 	alias = conf !== undefined ? conf.alias : true;
-	/* TODO: Handle request here. */
+	/* TODO: Handle request for other languages here. */
 	if (alias) {
 		day = days[w].substring(0, 3);
 	} else {
@@ -375,13 +473,37 @@ function calendar_weekDayNumberToString(w, conf)
 	return day;
 }
 
-/* jshintUnusedHack */
-if (false) {
-	calendar_isLeapYear();
-	calendar_getYearDaysCount();
-	calendar_abstractWeekDayNumber();
-	calendar_weekDayNumberToString();
-	calendar_abstractWeekDayNumberCE();
-	calendar_abstractWeekDayNumberBCE();
-	calendar_buildDisplayMonth();
-}
+/*TODO: later {{{ */
+/*
+var calendar_api = {
+	public: {
+		setup: calendar_setup,
+		display: {
+			object: calendar_createDisplayObj,
+			head: calendar_buildDisplayHead,
+			body: calendar_buildDisplayMonth
+		},
+		toString: function (d, m, dataFromMainThread) {
+			var display, data;
+			data = dataFromMainThread || {
+				head: {
+					templ: "",
+					tokens: [],
+					f: false,
+					m: 0,
+					y: 2016
+				} // etc
+			};
+			display = calendar_createDisplayObj(data.m, data.y);
+			display = calendar_buildDisplayHead(
+				display, calendar_setup(instructions)
+			);
+			display = calendar_buildDisplayMonth(
+				display, calendar_setup(instructions)
+			);
+			return sprintf(display.fmt, display.arg);
+		}
+	}
+};
+*/
+/* }}} */
